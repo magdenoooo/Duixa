@@ -3,7 +3,11 @@ import { BoltCircle, DocumentText, DownloadMinimalistic, FileText, InfoSquare } 
 import Link from "next/link";
 import { useState } from "react";
 
-export default function ProductContent({ product }) {
+interface ProductContentProps {
+  product: any;
+}
+
+export default function ProductContent({ product }: ProductContentProps) {
   const [active, setActive] = useState(0);
   
   return (

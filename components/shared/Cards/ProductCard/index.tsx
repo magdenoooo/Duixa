@@ -16,9 +16,16 @@ export default function ProductCard({
   in_stock: number;
 }) {
   // التأكد من أن الصورة صالحة أو استخدام صورة افتراضية
-  const imageUrl = typeof image === 'string' && image.startsWith('http') 
-    ? image 
-    : "https://images.pexels.com/photos/4239091/pexels-photo-4239091.jpeg";
+  const getValidImageUrl = (img: StaticImageData | string): string => {
+    if (typeof img === 'string') {
+      if (img.startsWith('http')) {
+        return img;
+      }
+    }
+    return "https://images.pexels.com/photos/4239091/pexels-photo-4239091.jpeg";
+  };
+
+  const imageUrl = getValidImageUrl(image);
 
   return (
     <div className="relative border-[4px] border-white rounded-[16px] h-[533px] flex flex-col justify-between overflow-hidden transition-all duration-300 over:scale-105 hover:shadow-[0px_14px_30px_0px_rgba(0,0,0,0.03)] hover:scale-105">

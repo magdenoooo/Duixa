@@ -8,10 +8,31 @@ import ProductContent from "@/components/single-product/ProductContent";
 import OtherViewProduct from "@/components/single-product/OtherViewProduct";
 import { ContactUs } from "@/components/shared";
 
-export default function ProductPage({ params }) {
+interface ProductPageProps {
+  params: Promise<{ single: string[] }>;
+}
+
+export default function ProductPage({ params }: ProductPageProps) {
+  const [resolvedParams, setResolvedParams] = React.useState<{ single: string[] } | null>(null);
+  
+  React.useEffect(() => {
+    params.then(setResolvedParams);
+  }, [params]);
+  
+  const productId = resolvedParams?.single?.[0];
   const productId = params?.single?.[0];
   const { data: productData, isLoading, error } = useProduct(productId);
   const product = productData?.data;
+
+  if (!resolvedParams) {
+    return (
+      <div className="container mt-[140px]">
+        <div className="flex justify-center items-center py-20">
+          <div className="text-lg text-dark-gray">جاري تحميل...</div>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (

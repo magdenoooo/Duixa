@@ -13,9 +13,16 @@ interface BlogCardProps {
 
 export function BlogCard({ image, title, description, timeAgo, tags, id }: BlogCardProps) {
   // التأكد من أن الصورة صالحة أو استخدام صورة افتراضية
-  const imageUrl = typeof image === 'string' && image.startsWith('http') 
-    ? image 
-    : "https://images.pexels.com/photos/1040173/pexels-photo-1040173.jpeg";
+  const getValidImageUrl = (img: StaticImageData | string): string => {
+    if (typeof img === 'string') {
+      if (img.startsWith('http')) {
+        return img;
+      }
+    }
+    return "https://images.pexels.com/photos/1040173/pexels-photo-1040173.jpeg";
+  };
+
+  const imageUrl = getValidImageUrl(image);
 
   return (
     <div className="flex flex-col gap-[15px] p-[25px] rounded-[15px] bg-white border border-border transition-all duration-300 hover:scale-105 hover:shadow-[0px_14px_30px_0px_rgba(0,0,0,0.03)] ">

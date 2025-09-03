@@ -5,10 +5,31 @@ import { useBlog } from "@/hooks/useApi";
 import SingleCard from "@/components/single-product/SideCard";
 import Image from "next/image";
 
-export default function BlogPage({ params }) {
+interface BlogPageProps {
+  params: Promise<{ blog: string }>;
+}
+
+export default function BlogPage({ params }: BlogPageProps) {
+  const [resolvedParams, setResolvedParams] = React.useState<{ blog: string } | null>(null);
+  
+  React.useEffect(() => {
+    params.then(setResolvedParams);
+  }, [params]);
+  
+  const blogId = resolvedParams?.blog;
   const blogId = params?.blog;
   const { data: blogData, isLoading, error } = useBlog(blogId);
   const blog = blogData?.data;
+
+  if (!resolvedParams) {
+    return (
+      <div className="container mt-[140px]">
+        <div className="flex justify-center items-center py-20">
+          <div className="text-lg text-dark-gray">جاري تحميل...</div>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (

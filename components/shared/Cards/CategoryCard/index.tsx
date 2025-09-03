@@ -25,9 +25,16 @@ export const CategoryCard = ({
   tags = ["غسيل", "مسحوق", "تنظيف"],
 }: ProductCardProps) => {
   // التأكد من أن الصورة صالحة أو استخدام صورة افتراضية
-  const imageUrl = typeof image === 'string' && image.startsWith('http') 
-    ? image 
-    : "https://images.pexels.com/photos/4239091/pexels-photo-4239091.jpeg";
+  const getValidImageUrl = (img: StaticImageData | string): string => {
+    if (typeof img === 'string') {
+      if (img.startsWith('http')) {
+        return img;
+      }
+    }
+    return "https://images.pexels.com/photos/4239091/pexels-photo-4239091.jpeg";
+  };
+
+  const imageUrl = getValidImageUrl(image);
 
   return (
     <div className="bg-white p-5 rounded-[15px] shadow-[0px_4px_54px_0px_rgba(0,0,0,0.05)] flex flex-col gap-[12px] hover:scale-105 transition-all duration-300">

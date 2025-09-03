@@ -8,6 +8,7 @@ import { Phone, Email, User, ChatLine, Location, ArrowLeft } from "@/public/svg"
 import map from "@/public/images/_Google maps mockup.png";
 import Image from "next/image";
 import { useState } from "react";
+import { useFormContext } from "react-hook-form";
 
 const schema = yup.object().shape({
   phone_number: yup.string().required("رقم الهاتف مطلوب").min(10, "رقم الهاتف يجب أن يكون 10 أرقام على الأقل"),
