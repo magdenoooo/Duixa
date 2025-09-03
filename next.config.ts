@@ -2,13 +2,6 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: [
-      "localhost",
-      "dieuxeg.com", 
-      "api.dieuxeg.com",
-      "images.pexels.com",
-      "www.pexels.com"
-    ],
     remotePatterns: [
       {
         protocol: 'https',
