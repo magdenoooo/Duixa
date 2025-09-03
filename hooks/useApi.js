@@ -15,7 +15,10 @@ export const QUERY_KEYS = {
 
 // دالة مساعدة للتعامل مع الأخطاء واستخدام seed data
 const handleQueryError = (error, seedDataKey) => {
-  console.error(`❌ Query Error for ${seedDataKey}:`, error);
+  // تقليل الـ console errors للتركيز على المشاكل الحقيقية
+  if (process.env.NODE_ENV === 'development') {
+    console.warn(`⚠️ ${seedDataKey} API unavailable, using seed data`);
+  }
   
   if (error?.shouldUseSeedData && SEED_DATA[seedDataKey]) {
     console.log(`🌱 Using seed data for ${seedDataKey}`);
