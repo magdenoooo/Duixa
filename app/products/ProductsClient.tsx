@@ -4,7 +4,11 @@ import { useProducts } from "@/hooks/useApi";
 import ProductsHero from "@/components/shared/ProductsHero";
 import ProductCard from "@/components/shared/Cards/ProductCard";
 
-export default function ProductsClient({ searchParams }) {
+interface ProductsClientProps {
+  searchParams: { filter?: string };
+}
+
+export default function ProductsClient({ searchParams }: ProductsClientProps) {
   const filter = searchParams?.filter || "";
   const { data: productsData, isLoading, error } = useProducts({ 
     category: filter === "latest" ? undefined : filter,

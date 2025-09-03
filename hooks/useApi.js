@@ -17,11 +17,13 @@ export const useProducts = (params = {}) => {
   return useQuery({
     queryKey: [QUERY_KEYS.PRODUCTS, params],
     queryFn: async () => {
+      console.log('Fetching products with params:', params);
       const response = await api.get('/products', { params });
+      console.log('Products response:', response);
       return response;
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes (updated from cacheTime)
+    gcTime: 10 * 60 * 1000, // 10 minutes
   });
 };
 
@@ -29,7 +31,9 @@ export const useProduct = (id) => {
   return useQuery({
     queryKey: [QUERY_KEYS.PRODUCT, id],
     queryFn: async () => {
+      console.log('Fetching product with id:', id);
       const response = await api.get(`/products/${id}`);
+      console.log('Product response:', response);
       return response;
     },
     enabled: !!id,
@@ -42,9 +46,11 @@ export const useFeaturedProducts = (limit = 6) => {
   return useQuery({
     queryKey: [QUERY_KEYS.PRODUCTS, 'featured', limit],
     queryFn: async () => {
+      console.log('Fetching featured products with limit:', limit);
       const response = await api.get('/products/featured', { 
         params: { limit } 
       });
+      console.log('Featured products response:', response);
       return response;
     },
     staleTime: 5 * 60 * 1000,
@@ -57,7 +63,9 @@ export const useCategories = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.CATEGORIES],
     queryFn: async () => {
+      console.log('Fetching categories');
       const response = await api.get('/categories');
+      console.log('Categories response:', response);
       return response;
     },
     staleTime: 10 * 60 * 1000, // Categories don't change often
@@ -95,7 +103,9 @@ export const useBlogs = (params = {}) => {
   return useQuery({
     queryKey: [QUERY_KEYS.BLOGS, params],
     queryFn: async () => {
+      console.log('Fetching blogs with params:', params);
       const response = await api.get('/blogs', { params });
+      console.log('Blogs response:', response);
       return response;
     },
     staleTime: 5 * 60 * 1000,
@@ -107,7 +117,9 @@ export const useBlog = (id) => {
   return useQuery({
     queryKey: [QUERY_KEYS.BLOG, id],
     queryFn: async () => {
+      console.log('Fetching blog with id:', id);
       const response = await api.get(`/blogs/${id}`);
+      console.log('Blog response:', response);
       return response;
     },
     enabled: !!id,
@@ -122,7 +134,9 @@ export const useContact = () => {
   
   return useMutation({
     mutationFn: async (contactData) => {
+      console.log('Sending contact data:', contactData);
       const response = await api.post('/contact', contactData);
+      console.log('Contact response:', response);
       return response;
     },
     onSuccess: () => {
