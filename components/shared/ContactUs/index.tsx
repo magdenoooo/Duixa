@@ -101,8 +101,8 @@ export default function Contact({ isHome }: { isHome?: boolean }) {
             <CustomInput
               isHome
               name="message"
-              area
-              placeholder="الاميل الخاص بك"
+              placeholder="اكتب رسالتك هنا"
+              placeholder="اكتب رسالتك هنا"
               icon={<ChatLine className="size-[35px]" />}
             />
             <div className="flex gap-[20px]">
