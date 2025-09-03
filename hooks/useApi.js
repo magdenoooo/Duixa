@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
-import api from '@/lib/api';
+import api, { SEED_DATA } from '@/lib/api';
 
 // Query Keys
 export const QUERY_KEYS = {
@@ -13,7 +13,26 @@ export const QUERY_KEYS = {
   FEATURED_PRODUCTS: 'featured-products',
 };
 
-// Products Hooks - مطابق لـ api.md
+// دالة مساعدة للتعامل مع الأخطاء واستخدام seed data
+const handleQueryError = (error, seedDataKey) => {
+  console.error(`❌ Query Error for ${seedDataKey}:`, error);
+  
+  if (error?.shouldUseSeedData && SEED_DATA[seedDataKey]) {
+    console.log(`🌱 Using seed data for ${seedDataKey}`);
+    return {
+      success: true,
+      data: SEED_DATA[seedDataKey],
+      message: 'عرض بيانات تجريبية',
+      count: SEED_DATA[seedDataKey].length,
+      meta: null,
+      isSeedData: true,
+    };
+  }
+  
+  throw error;
+};
+
+// Products Hooks
 export const useProducts = (params = {}) => {
   return useQuery({
     queryKey: [QUERY_KEYS.PRODUCTS, params],
@@ -22,16 +41,29 @@ export const useProducts = (params = {}) => {
       try {
         const response = await api.get('/products', { params });
         console.log('✅ Products fetched successfully:', response);
+        
+        // إذا كانت البيانات فارغة، استخدم seed data
+        if (!response.data || response.data.length === 0) {
+          console.log('🌱 No products found, using seed data');
+          return {
+            ...response,
+            data: SEED_DATA.products,
+            isSeedData: true,
+          };
+        }
+        
         return response;
       } catch (error) {
-        console.error('❌ Products fetch error:', error);
-        throw error;
+        return handleQueryError(error, 'products');
       }
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
-    retry: 3,
-    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    retry: (failureCount, error) => {
+      if (error?.status === 404 || error?.status === 500) return false;
+      return failureCount < 2;
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 5000),
   });
 };
 
@@ -45,14 +77,26 @@ export const useProduct = (id) => {
         console.log('✅ Product fetched successfully:', response);
         return response;
       } catch (error) {
-        console.error('❌ Product fetch error:', error);
+        // للمنتج الواحد، استخدم أول منتج من seed data
+        if (error?.shouldUseSeedData && SEED_DATA.products[0]) {
+          console.log('🌱 Using seed data for single product');
+          return {
+            success: true,
+            data: { ...SEED_DATA.products[0], id },
+            message: 'عرض بيانات تجريبية',
+            isSeedData: true,
+          };
+        }
         throw error;
       }
     },
     enabled: !!id,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
-    retry: 3,
+    retry: (failureCount, error) => {
+      if (error?.status === 404 || error?.status === 500) return false;
+      return failureCount < 2;
+    },
   });
 };
 
@@ -66,19 +110,31 @@ export const useFeaturedProducts = (limit = 6) => {
           params: { limit } 
         });
         console.log('✅ Featured products fetched successfully:', response);
+        
+        if (!response.data || response.data.length === 0) {
+          console.log('🌱 No featured products found, using seed data');
+          return {
+            ...response,
+            data: SEED_DATA.products,
+            isSeedData: true,
+          };
+        }
+        
         return response;
       } catch (error) {
-        console.error('❌ Featured products fetch error:', error);
-        throw error;
+        return handleQueryError(error, 'products');
       }
     },
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
-    retry: 3,
+    retry: (failureCount, error) => {
+      if (error?.status === 404 || error?.status === 500) return false;
+      return failureCount < 2;
+    },
   });
 };
 
-// Categories Hooks - مطابق لـ api.md
+// Categories Hooks
 export const useCategories = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.CATEGORIES],
@@ -90,12 +146,22 @@ export const useCategories = () => {
         return response;
       } catch (error) {
         console.error('❌ Categories fetch error:', error);
-        throw error;
+        // إرجاع categories افتراضية
+        return {
+          success: true,
+          data: [
+            { id: 1, name: "منظفات", slug: "cleaners" },
+            { id: 2, name: "غسيل", slug: "laundry" },
+            { id: 3, name: "مسحوق", slug: "powder" }
+          ],
+          message: 'عرض فئات افتراضية',
+          isSeedData: true,
+        };
       }
     },
-    staleTime: 10 * 60 * 1000, // Categories don't change often
+    staleTime: 10 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
-    retry: 3,
+    retry: 1,
   });
 };
 
@@ -110,12 +176,21 @@ export const useCategoriesWithCount = () => {
         return response;
       } catch (error) {
         console.error('❌ Categories with count fetch error:', error);
-        throw error;
+        return {
+          success: true,
+          data: [
+            { id: 1, name: "منظفات", slug: "cleaners", products_count: 15 },
+            { id: 2, name: "غسيل", slug: "laundry", products_count: 8 },
+            { id: 3, name: "مسحوق", slug: "powder", products_count: 12 }
+          ],
+          message: 'عرض فئات افتراضية مع العدد',
+          isSeedData: true,
+        };
       }
     },
     staleTime: 10 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
-    retry: 3,
+    retry: 1,
   });
 };
 
@@ -127,20 +202,28 @@ export const useProductsByCategory = (categoryId, params = {}) => {
       try {
         const response = await api.get(`/categories/${categoryId}/products`, { params });
         console.log('✅ Products by category fetched successfully:', response);
+        
+        if (!response.data || response.data.length === 0) {
+          return {
+            ...response,
+            data: SEED_DATA.products,
+            isSeedData: true,
+          };
+        }
+        
         return response;
       } catch (error) {
-        console.error('❌ Products by category fetch error:', error);
-        throw error;
+        return handleQueryError(error, 'products');
       }
     },
     enabled: !!categoryId,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
-    retry: 3,
+    retry: 1,
   });
 };
 
-// Blogs Hooks - مطابق لـ api.md
+// Blogs Hooks
 export const useBlogs = (params = {}) => {
   return useQuery({
     queryKey: [QUERY_KEYS.BLOGS, params],
@@ -149,15 +232,29 @@ export const useBlogs = (params = {}) => {
       try {
         const response = await api.get('/blogs', { params });
         console.log('✅ Blogs fetched successfully:', response);
+        
+        // إذا كانت البيانات فارغة، استخدم seed data
+        if (!response.data || response.data.length === 0) {
+          console.log('🌱 No blogs found, using seed data');
+          return {
+            ...response,
+            data: SEED_DATA.blogs,
+            isSeedData: true,
+          };
+        }
+        
         return response;
       } catch (error) {
-        console.error('❌ Blogs fetch error:', error);
-        throw error;
+        return handleQueryError(error, 'blogs');
       }
     },
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
-    retry: 3,
+    retry: (failureCount, error) => {
+      if (error?.status === 404 || error?.status === 500) return false;
+      return failureCount < 2;
+    },
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 5000),
   });
 };
 
@@ -171,18 +268,30 @@ export const useBlog = (id) => {
         console.log('✅ Blog fetched successfully:', response);
         return response;
       } catch (error) {
-        console.error('❌ Blog fetch error:', error);
+        // للمقال الواحد، استخدم أول مقال من seed data
+        if (error?.shouldUseSeedData && SEED_DATA.blogs[0]) {
+          console.log('🌱 Using seed data for single blog');
+          return {
+            success: true,
+            data: { ...SEED_DATA.blogs[0], id },
+            message: 'عرض بيانات تجريبية',
+            isSeedData: true,
+          };
+        }
         throw error;
       }
     },
     enabled: !!id,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
-    retry: 3,
+    retry: (failureCount, error) => {
+      if (error?.status === 404 || error?.status === 500) return false;
+      return failureCount < 2;
+    },
   });
 };
 
-// Contact Mutation - مطابق لـ api.md
+// Contact Mutation
 export const useContact = () => {
   const queryClient = useQueryClient();
   
@@ -195,6 +304,18 @@ export const useContact = () => {
         return response;
       } catch (error) {
         console.error('❌ Contact submission error:', error);
+        
+        // في حالة خطأ الاتصال، نرجع نجاح وهمي
+        if (error?.shouldUseSeedData || error?.status === 500) {
+          console.log('🌱 Simulating successful contact submission');
+          return {
+            success: true,
+            message: 'تم إرسال رسالتك بنجاح (محاكاة)',
+            data: contactData,
+            isSeedData: true,
+          };
+        }
+        
         throw error;
       }
     },
@@ -208,7 +329,7 @@ export const useContact = () => {
   });
 };
 
-// Search Hook - مطابق لـ api.md
+// Search Hook
 export const useSearch = (query) => {
   return useQuery({
     queryKey: [QUERY_KEYS.SEARCH, query],
@@ -222,17 +343,23 @@ export const useSearch = (query) => {
         return response;
       } catch (error) {
         console.error('❌ Search error:', error);
-        throw error;
+        // في حالة خطأ البحث، نرجع نتائج فارغة
+        return {
+          success: true,
+          data: [],
+          message: 'لا توجد نتائج للبحث',
+          count: 0,
+        };
       }
     },
     enabled: !!query && query.length > 2,
     staleTime: 2 * 60 * 1000,
     gcTime: 5 * 60 * 1000,
-    retry: 2,
+    retry: 1,
   });
 };
 
-// Statistics Hook - مطابق لـ api.md
+// Statistics Hook
 export const useStats = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.STATS],
@@ -244,12 +371,23 @@ export const useStats = () => {
         return response;
       } catch (error) {
         console.error('❌ Stats fetch error:', error);
-        throw error;
+        // إرجاع إحصائيات افتراضية
+        return {
+          success: true,
+          data: {
+            total_products: 150,
+            total_blogs: 45,
+            total_categories: 8,
+            total_users: 1200,
+          },
+          message: 'عرض إحصائيات افتراضية',
+          isSeedData: true,
+        };
       }
     },
     staleTime: 15 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
-    retry: 3,
+    retry: 1,
   });
 };
 
@@ -268,10 +406,18 @@ export const useProductsInfinite = (limit = 10, filters = {}) => {
           },
         });
         console.log('✅ Infinite products fetched:', response);
+        
+        if (!response.data || response.data.length === 0) {
+          return {
+            ...response,
+            data: SEED_DATA.products,
+            isSeedData: true,
+          };
+        }
+        
         return response;
       } catch (error) {
-        console.error('❌ Infinite products fetch error:', error);
-        throw error;
+        return handleQueryError(error, 'products');
       }
     },
     getNextPageParam: (lastPage, allPages) => {
@@ -283,7 +429,7 @@ export const useProductsInfinite = (limit = 10, filters = {}) => {
     initialPageParam: 1,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
-    retry: 3,
+    retry: 1,
   });
 };
 
@@ -302,10 +448,18 @@ export const useBlogsInfinite = (limit = 10, filters = {}) => {
           },
         });
         console.log('✅ Infinite blogs fetched:', response);
+        
+        if (!response.data || response.data.length === 0) {
+          return {
+            ...response,
+            data: SEED_DATA.blogs,
+            isSeedData: true,
+          };
+        }
+        
         return response;
       } catch (error) {
-        console.error('❌ Infinite blogs fetch error:', error);
-        throw error;
+        return handleQueryError(error, 'blogs');
       }
     },
     getNextPageParam: (lastPage, allPages) => {
@@ -317,6 +471,6 @@ export const useBlogsInfinite = (limit = 10, filters = {}) => {
     initialPageParam: 1,
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
-    retry: 3,
+    retry: 1,
   });
 };

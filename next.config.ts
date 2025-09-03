@@ -2,7 +2,13 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["dieuxeg.com", "api.dieuxeg.com"],
+    domains: [
+      "localhost",
+      "dieuxeg.com", 
+      "api.dieuxeg.com",
+      "images.pexels.com",
+      "www.pexels.com"
+    ],
     remotePatterns: [
       {
         protocol: 'https',
@@ -17,10 +23,28 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3000',
+        pathname: '/**',
+      },
+      {
         protocol: 'https',
         hostname: 'localhost',
         port: '3000',
-        pathname: '/uploads/**',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.pexels.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.pexels.com',
+        port: '',
+        pathname: '/**',
       },
     ],
   },
