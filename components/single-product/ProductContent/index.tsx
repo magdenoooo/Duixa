@@ -3,8 +3,9 @@ import { BoltCircle, DocumentText, DownloadMinimalistic, FileText, InfoSquare } 
 import Link from "next/link";
 import { useState } from "react";
 
-export default function ProductContent() {
+export default function ProductContent({ product }) {
   const [active, setActive] = useState(0);
+  
   return (
     <div className="pt-[30px]  lg:p-[30px] flex flex-col gap-[30px] bg-gradient-to-b from-background via-transparent via-10%  border border-border rounded-[20px]">
       <div className=" flex items-center justify-center">
@@ -57,85 +58,32 @@ export default function ProductContent() {
             <h3 className="text24 font-semibold leading-[150%]">تفاصيل المنتج</h3>
           </div>
 
-          <table className="flex gap-[10px]  w-full">
-            <thead className="flex-1  ">
-              <tr className="w-full bg-[#F8F9FA] border border-border p-[10px] flex items-center justify-center rounded-[10px] ">
-                <td className="text-16 text-nowrap  text-center leading-[24px] font-medium">اسم العلامة التجارية </td>
-              </tr>
-
-              <tr className="mt-[10px] w-full bg-[#F8F9FA] border border-border p-[10px] flex items-center justify-center rounded-[10px]">
-                <td className="text-16 text-nowrap  text-center leading-[24px] font-medium"> شكل المنتج </td>
-              </tr>
-
-              <tr className="mt-[10px] w-full bg-[#F8F9FA] border border-border p-[10px] flex items-center justify-center rounded-[10px]">
-                <td className="text-16 text-nowrap  text-center leading-[24px] font-medium">رائحة </td>
-              </tr>
-              <tr className="mt-[10px] w-full bg-[#F8F9FA] border border-border p-[10px] flex items-center justify-center rounded-[10px]">
-                <td className="text-16 text-nowrap  text-center leading-[24px] font-medium">إحصاء الوحدات </td>
-              </tr>
-
-              <tr className="mt-[10px] w-full bg-[#F8F9FA] border border-border p-[10px] flex items-center justify-center rounded-[10px]">
-                <td className="text-16 text-nowrap  text-center leading-[24px] font-medium">عدد العناصر </td>
-              </tr>
-
-              <tr className="mt-[10px] w-full bg-[#F8F9FA] border border-border p-[10px] flex items-center justify-center rounded-[10px]">
-                <td className="text-16 text-nowrap  text-center leading-[24px] font-medium">نوع التركيبة </td>
-              </tr>
-              <tr className="mt-[10px] w-full bg-[#F8F9FA] border border-border p-[10px] flex items-center justify-center rounded-[10px]">
-                <td className="text-16 text-nowrap  text-center leading-[24px] font-medium">استخدامات محددة للمنتج </td>
-              </tr>
-              <tr className="mt-[10px] w-full bg-[#F8F9FA] border border-border p-[10px] flex items-center justify-center rounded-[10px]">
-                <td className="text-16 text-nowrap  text-center leading-[24px] font-medium">وزن السلعة </td>
-              </tr>
-              <tr className="mt-[10px] w-full bg-[#F8F9FA] border border-border p-[10px] flex items-center justify-center rounded-[10px]">
-                <td className="text-16 text-nowrap  text-center leading-[24px] font-medium">نوع البشرة </td>
-              </tr>
-              <tr className="mt-[10px] w-full bg-[#F8F9FA] border border-border p-[10px] flex items-center justify-center rounded-[10px]">
-                <td className="text-16 text-nowrap  text-center leading-[24px] font-medium">أبعاد السلعة </td>
-              </tr>
-            </thead>
-
-            <tbody className="flex-2">
-              <tr className=" border border-border p-[10px] flex items-center justify-start rounded-[10px] ">
-                <td className="text-dark-gray text-16 text-nowrap  text-start leading-[24px] font-medium">DIEUX</td>
-              </tr>
-              <tr className="mt-[10px] border border-border p-[10px] flex items-center justify-start rounded-[10px]">
-                <td className="text-dark-gray text-16 text-nowrap  text-center leading-[24px] font-medium">مسحوق</td>
-              </tr>
-
-              <tr className="mt-[10px] border border-border p-[10px] flex items-center justify-start rounded-[10px]">
-                <td className="text-dark-gray text-16 text-nowrap  text-center leading-[24px] font-medium">خلاصة العطور</td>
-              </tr>
-              <tr className="mt-[10px] border border-border p-[10px] flex items-center justify-start rounded-[10px]">
-                <td className="text-dark-gray text-16 text-nowrap  text-center leading-[24px] font-medium">1000 Grams</td>
-              </tr>
-              <tr className="mt-[10px] border border-border p-[10px] flex items-center justify-start rounded-[10px]">
-                <td className="text-dark-gray text-16 text-nowrap  text-center leading-[24px] font-medium">1</td>
-              </tr>
-
-              <tr className="mt-[10px] border border-border p-[10px] flex items-center justify-start rounded-[10px]">
-                <td className="text-dark-gray text-16 text-nowrap  text-center leading-[24px] font-medium">كفاءة عالية, مركزة</td>
-              </tr>
-
-              <tr className="mt-[10px] border border-border p-[10px] flex items-center justify-start rounded-[10px]">
-                <td className="text-dark-gray text-16 text-nowrap  text-center leading-[24px] font-medium">يُغسل في الغسالة</td>
-              </tr>
-
-              <tr className="mt-[10px] border border-border p-[10px] flex items-center justify-start rounded-[10px]">
-                <td className="text-dark-gray text-16 text-nowrap  text-center leading-[24px] font-medium">1 كيلوجرام</td>
-              </tr>
-
-              <tr className="mt-[10px] border border-border p-[10px] flex items-center justify-start rounded-[10px]">
-                <td className="text-dark-gray text-16 text-nowrap  text-center leading-[24px] font-medium">الكل</td>
-              </tr>
-
-              <tr className="mt-[10px] border border-border p-[10px] flex items-center justify-start rounded-[10px]">
-                <td className="text-dark-gray text-16 text-nowrap  text-center leading-[24px] font-medium">
-                  50 x 50 x 50 ملي متر
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          {product?.product_details && product.product_details.length > 0 ? (
+            <table className="flex gap-[10px] w-full">
+              <thead className="flex-1">
+                {product.product_details.map((detail, index) => (
+                  <tr key={index} className={`${index > 0 ? 'mt-[10px]' : ''} w-full bg-[#F8F9FA] border border-border p-[10px] flex items-center justify-center rounded-[10px]`}>
+                    <td className="text-16 text-nowrap text-center leading-[24px] font-medium">
+                      {detail.key}
+                    </td>
+                  </tr>
+                ))}
+              </thead>
+              <tbody className="flex-2">
+                {product.product_details.map((detail, index) => (
+                  <tr key={index} className={`${index > 0 ? 'mt-[10px]' : ''} border border-border p-[10px] flex items-center justify-start rounded-[10px]`}>
+                    <td className="text-dark-gray text-16 text-nowrap text-start leading-[24px] font-medium">
+                      {detail.value}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div className="text-center text-dark-gray py-4">
+              لا توجد تفاصيل متاحة للمنتج
+            </div>
+          )}
         </div>
 
         <div id="product-describe" className="p-[20px] border border-border rounded-[20px] flex flex-col gap-5">
@@ -146,36 +94,16 @@ export default function ProductContent() {
             <h3 className="text24 font-semibold leading-[150%]">وصف المنتج</h3>
           </div>
           <div className="flex flex-col gap-[20px]">
-            <p className="text18 leading-[200%] text-right">
-              تتزايد حاجة المجتمع للتطبيقات التي يمكنها تسهيل الأنشطة اليومية مع تقدم التكنولوجيا. تبحث العديد من
-              الشركات حاليًا عن مطورين حتى يتمكنوا من بيع المنتجات (السلع أو الخدمات) التي يمكنها الوصول إلى مشترين أوسع
-              عبر الإنترنت. لكي نصبح مطورين، لا يتعين علينا أن نفهم كل علوم التصميم، ولكن على الأقل يمكننا معرفة
-              الأساسيات حتى نتمكن من تحويل التصميم إلى كود إلى تطبيق كامل بشكل أكثر فعالية. هذا الفصل هو الوسيلة
-              المناسبة لتعلم التصميم والبرمجة في نفس الوقت. باستخدام Mentor، ستتمكن من إنشاء تطبيقات مفيدة عن طريق إضافة
-              رسوم متحركة إلى التطبيقات التي تم تصميمها لجعلها أكثر تشويقًا وتفاعلية. سيشرح الموجهون الخبراء لدينا كيفية
-              إنشاء تطبيق أثاث بدءًا من مرحلة التصميم وحتى مرحلة البرمجة باستخدام إطار عمل Google Flutter SDK الرائد.
-              باستخدام أداة التصميم الشهيرة Figma، سوف تتعلم أساسيات إنشاء نماذج بالحجم الطبيعي التفاعلية كتوضيح في
-              تطبيق ما أو المعروف باسم النموذج الأولي. بعد ذلك سوف تتعلم كيفية تطبيق الرسوم المتحركة بين الشاشات لإضفاء
-              الحيوية على النموذج الأولي. بعد ذلك، ستستمر العملية في التقطيع باستخدام مجموعة متنوعة من أدوات Flutter
-              Widgets الجاهزة للاستخدام، بحيث يكون عمل المطور أكثر كفاءة، مما يوفر الوقت والجهد. هذا الفصل مناسب لأولئك
-              منكم الذين يرغبون في تعميق التطوير الكامل لتطبيقات الهاتف المحمول على الجانب الأمامي. لاحقًا، يمكن أن يصبح
-              التطبيق الذي تم إنشاؤه بنجاح بمثابة محفظة للتقدم للعمل أو لاحتياجات عملك الشخصية. إذا واجهت صعوبات أثناء
-              الدراسة، من فضلك اسأل معلمنا مباشرة من خلال مجموعة Telegram، حسنًا؟ سجل الآن ونحن ننتظر في الصف!
-            </p>
-            <p className="text18 leading-[200%] text-right">
-              سيشرح الموجهون الخبراء لدينا كيفية إنشاء تطبيق أثاث بدءًا من مرحلة التصميم وحتى مرحلة البرمجة باستخدام
-              إطار عمل Google Flutter SDK الرائد. باستخدام أداة التصميم الشهيرة Figma، سوف تتعلم أساسيات إنشاء نماذج
-              بالحجم الطبيعي التفاعلية كتوضيح في تطبيق ما أو المعروف باسم النموذج الأولي. بعد ذلك سوف تتعلم كيفية تطبيق
-              الرسوم المتحركة بين الشاشات لإضفاء الحيوية على النموذج الأولي. بعد ذلك، ستستمر العملية في التقطيع باستخدام
-              مجموعة متنوعة من أدوات Flutter Widgets الجاهزة للاستخدام، بحيث يكون عمل المطور أكثر كفاءة، مما يوفر الوقت
-              والجهد.
-            </p>
-            <p className="text18 leading-[200%] text-right">
-              هذا الفصل مناسب لأولئك منكم الذين يرغبون في تعميق التطوير الكامل لتطبيقات الهاتف المحمول على الجانب
-              الأمامي. لاحقًا، يمكن أن يصبح التطبيق الذي تم إنشاؤه بنجاح بمثابة محفظة للتقدم للعمل أو لاحتياجات عملك
-              الشخصية. إذا واجهت صعوبات أثناء الدراسة، من فضلك اسأل معلمنا مباشرة من خلال مجموعة Telegram، حسنًا؟ سجل
-              الآن ونحن ننتظر في الصف!
-            </p>
+            {product?.notes ? (
+              <div 
+                className="text18 leading-[200%] text-right prose prose-lg max-w-none"
+                dangerouslySetInnerHTML={{ __html: product.notes }}
+              />
+            ) : (
+              <p className="text18 leading-[200%] text-right text-dark-gray">
+                لا توجد تفاصيل إضافية متاحة للمنتج
+              </p>
+            )}
           </div>
         </div>
 
@@ -187,55 +115,30 @@ export default function ProductContent() {
             <h3 className="text24 font-semibold leading-[150%]">مرفقات</h3>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-[20px]">
-           
-            <div className="flex items-center gap-[16px] p-4 border border-border bg-white rounded-[12px]">
-              <div className="size-[51px] flex items-center justify-center bg-primary-one rounded-[10px]">
-                <FileText />
+            {product?.files && product.files.length > 0 ? (
+              product.files.map((file, index) => (
+                <div key={index} className="flex items-center gap-[16px] p-4 border border-border bg-white rounded-[12px]">
+                  <div className="size-[51px] flex items-center justify-center bg-primary-one rounded-[10px]">
+                    <FileText />
+                  </div>
+                  <div className="flex flex-col gap-[3px]">
+                    <h3 className="text-base">{file.name}</h3>
+                    <p className="text-sm text-dark-gray">{file.size}</p>
+                  </div>
+                  <a 
+                    href={file.src}
+                    download
+                    className="flex items-center justify-center size-[38px] rounded-[8px] bg-background hover:bg-second-primary-color hover:text-white transition-all duration-300"
+                  >
+                    <DownloadMinimalistic />
+                  </a>
+                </div>
+              ))
+            ) : (
+              <div className="col-span-2 text-center text-dark-gray py-4">
+                لا توجد ملفات متاحة للتحميل
               </div>
-              <div className="flex flex-col gap-[3px]">
-                <h3 className="text-base ">ملف الحصه الاوله للتحميل.PDF</h3>
-                <p className="text-sm text-dark-gray">200 KB</p>
-              </div>
-              <button className="flex items-center justify-center size-[38px] rounded-[8px] bg-background">
-                <DownloadMinimalistic/>
-              </button>
-            </div>
-            <div className="flex items-center gap-[16px] p-4 border border-border bg-white rounded-[12px]">
-              <div className="size-[51px] flex items-center justify-center bg-primary-one rounded-[10px]">
-                <FileText />
-              </div>
-              <div className="flex flex-col gap-[3px]">
-                <h3 className="text-base ">ملف الحصه الاوله للتحميل.PDF</h3>
-                <p className="text-sm text-dark-gray">200 KB</p>
-              </div>
-              <button className="flex items-center justify-center size-[38px] rounded-[8px] bg-background">
-                <DownloadMinimalistic/>
-              </button>
-            </div>
-            <div className="flex items-center gap-[16px] p-4 border border-border bg-white rounded-[12px]">
-              <div className="size-[51px] flex items-center justify-center bg-primary-one rounded-[10px]">
-                <FileText />
-              </div>
-              <div className="flex flex-col gap-[3px]">
-                <h3 className="text-base ">ملف الحصه الاوله للتحميل.PDF</h3>
-                <p className="text-sm text-dark-gray">200 KB</p>
-              </div>
-              <button className="flex items-center justify-center size-[38px] rounded-[8px] bg-background">
-                <DownloadMinimalistic/>
-              </button>
-            </div>
-            <div className="flex items-center gap-[16px] p-4 border border-border bg-white rounded-[12px]">
-              <div className="size-[51px] flex items-center justify-center bg-primary-one rounded-[10px]">
-                <FileText />
-              </div>
-              <div className="flex flex-col gap-[3px]">
-                <h3 className="text-base ">ملف الحصه الاوله للتحميل.PDF</h3>
-                <p className="text-sm text-dark-gray">200 KB</p>
-              </div>
-              <button className="flex items-center justify-center size-[38px] rounded-[8px] bg-background">
-                <DownloadMinimalistic/>
-              </button>
-            </div>
+            )}
           </div>
         </div>
       </div>

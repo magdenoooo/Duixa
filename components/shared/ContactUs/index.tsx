@@ -1,4 +1,5 @@
 "use client";
+import { useContact } from "@/hooks/useApi";
 import { Section } from "@/components/shared";
 import * as yup from "yup";
 import { SubmitHandler, useForm, FormProvider } from "react-hook-form";
@@ -7,12 +8,15 @@ import CustomInput from "./CustomInput";
 import { Phone, Email, User, ChatLine, Location, ArrowLeft } from "@/public/svg";
 import map from "@/public/images/_Google maps mockup.png";
 import Image from "next/image";
+import { useState } from "react";
+
 const schema = yup.object().shape({
-  phone: yup.string().required().min(10),
-  email: yup.string().email().required(),
-  message: yup.string().required().min(10),
-  fullName: yup.string().required().min(3),
+  phone_number: yup.string().required("رقم الهاتف مطلوب").min(10, "رقم الهاتف يجب أن يكون 10 أرقام على الأقل"),
+  email: yup.string().email("البريد الإلكتروني غير صحيح").required("البريد الإلكتروني مطلوب"),
+  message: yup.string().required("الرسالة مطلوبة").min(10, "الرسالة يجب أن تكون 10 أحرف على الأقل"),
+  full_name: yup.string().required("الاسم مطلوب").min(3, "الاسم يجب أن يكون 3 أحرف على الأقل"),
 });
+
 export type SchemaType = yup.InferType<typeof schema>;
 
 export default function Contact({ isHome }: { isHome?: boolean }) {
@@ -33,19 +37,40 @@ export default function Contact({ isHome }: { isHome?: boolean }) {
       description: " The Greek Campus - Dieux",
     },
   ];
+  
+  const [submitStatus, setSubmitStatus] = useState(null);
+  const contactMutation = useContact();
+  
   const form = useForm<SchemaType>({
     defaultValues: {
-      phone: "",
+      phone_number: "",
       email: "",
       message: "",
-      fullName: "",
+      full_name: "",
     },
     resolver: yupResolver(schema),
   });
+  
   const handelSubmit: SubmitHandler<SchemaType> = async (value, event) => {
     event?.preventDefault();
-    // console.log(value);
+    
+    try {
+      setSubmitStatus('loading');
+      await contactMutation.mutateAsync(value);
+      setSubmitStatus('success');
+      form.reset();
+      
+      // إخفاء رسالة النجاح بعد 5 ثوان
+      setTimeout(() => setSubmitStatus(null), 5000);
+    } catch (error) {
+      setSubmitStatus('error');
+      console.error('Contact form error:', error);
+      
+      // إخفاء رسالة الخطأ بعد 5 ثوان
+      setTimeout(() => setSubmitStatus(null), 5000);
+    }
   };
+  
   return (
     <Section
       isWhite={isHome ? true : false}
@@ -56,9 +81,21 @@ export default function Contact({ isHome }: { isHome?: boolean }) {
       {isHome && (
         <FormProvider {...form}>
           <form onSubmit={form.handleSubmit(handelSubmit)} className="grid grid-cols-1 gap-[19px]">
+            {submitStatus === 'success' && (
+              <div className="p-4 bg-green-100 border border-green-300 rounded-[10px] text-green-700">
+                تم إرسال رسالتك بنجاح. سنتواصل معك قريباً!
+              </div>
+            )}
+            
+            {submitStatus === 'error' && (
+              <div className="p-4 bg-red-100 border border-red-300 rounded-[10px] text-red-700">
+                حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.
+              </div>
+            )}
+            
             <div className="grid md:grid-cols-2 gap-[15px]">
-              <CustomInput isHome name="fullName" placeholder="اسمك بالكامل" icon={<User />} />
-              <CustomInput isHome name="phone" placeholder="رقم الهاتف" icon={<Phone className="size-[35px]" />} />
+              <CustomInput isHome name="full_name" placeholder="اسمك بالكامل" icon={<User />} />
+              <CustomInput isHome name="phone_number" placeholder="رقم الهاتف" icon={<Phone className="size-[35px]" />} />
             </div>
             <CustomInput isHome name="email" placeholder="الاميل الخاص بك" icon={<Email className="size-[30px]" />} />
             <CustomInput
@@ -71,13 +108,14 @@ export default function Contact({ isHome }: { isHome?: boolean }) {
             <div className="flex gap-[20px]">
               <button
                 type="submit"
-                className="max-w-[280px] px-[64px] py-[10px] text-white bg-second-primary-color rounded-[10px] text-[19.019px] hover:bg-second-primary-color/90 cursor-pointer transition-all duration-300"
+                disabled={contactMutation.isPending || submitStatus === 'loading'}
+                className="max-w-[280px] px-[64px] py-[10px] text-white bg-second-primary-color rounded-[10px] text-[19.019px] hover:bg-second-primary-color/90 cursor-pointer transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                تواصل معنا
+                {contactMutation.isPending || submitStatus === 'loading' ? 'جاري الإرسال...' : 'تواصل معنا'}
               </button>
               <button
                 type="reset"
-                onClick={() => form.reset({ email: "", fullName: "", message: "", phone: "" })}
+                onClick={() => form.reset({ email: "", full_name: "", message: "", phone_number: "" })}
                 className="max-w-[184px] px-[64px] py-[10px] bg-white text-[19.019px] rounded-[10px] cursor-pointer hover:text-dark-gray transition-all duration-300"
               >
                 الغاء
@@ -91,9 +129,21 @@ export default function Contact({ isHome }: { isHome?: boolean }) {
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-[30px] ">
             <FormProvider {...form}>
               <form onSubmit={form.handleSubmit(handelSubmit)} className="grid grid-cols-1 gap-[19px]">
+                {submitStatus === 'success' && (
+                  <div className="p-4 bg-green-100 border border-green-300 rounded-[10px] text-green-700">
+                    تم إرسال رسالتك بنجاح. سنتواصل معك قريباً!
+                  </div>
+                )}
+                
+                {submitStatus === 'error' && (
+                  <div className="p-4 bg-red-100 border border-red-300 rounded-[10px] text-red-700">
+                    حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.
+                  </div>
+                )}
+                
                 <div className="grid md:grid-cols-2 gap-[15px]">
-                  <CustomInput name="fullName" placeholder="اسمك بالكامل" icon={<User className="size-[35px]" />} />
-                  <CustomInput name="phone" placeholder="رقم الهاتف" icon={<Phone className="size-[35px]" />} />
+                  <CustomInput name="full_name" placeholder="اسمك بالكامل" icon={<User className="size-[35px]" />} />
+                  <CustomInput name="phone_number" placeholder="رقم الهاتف" icon={<Phone className="size-[35px]" />} />
                 </div>
                 <CustomInput name="email" placeholder="الاميل الخاص بك" icon={<Email className="size-[30px] " />} />
                 <CustomInput
@@ -105,13 +155,14 @@ export default function Contact({ isHome }: { isHome?: boolean }) {
                 <div className="flex gap-[20px]">
                   <button
                     type="submit"
-                    className="max-w-[280px] px-[64px] py-[10px] text-white bg-second-primary-color rounded-[10px] text-[19.019px] hover:bg-second-primary-color/90 cursor-pointer transition-all duration-300"
+                    disabled={contactMutation.isPending || submitStatus === 'loading'}
+                    className="max-w-[280px] px-[64px] py-[10px] text-white bg-second-primary-color rounded-[10px] text-[19.019px] hover:bg-second-primary-color/90 cursor-pointer transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    تواصل معنا
+                    {contactMutation.isPending || submitStatus === 'loading' ? 'جاري الإرسال...' : 'تواصل معنا'}
                   </button>
                   <button
                     type="reset"
-                    onClick={() => form.reset({ email: "", fullName: "", message: "", phone: "" })}
+                    onClick={() => form.reset({ email: "", full_name: "", message: "", phone_number: "" })}
                     className="max-w-[184px] px-[64px] py-[10px] bg-white text-[19.019px] rounded-[10px] cursor-pointer hover:text-dark-gray transition-all duration-300"
                   >
                     الغاء

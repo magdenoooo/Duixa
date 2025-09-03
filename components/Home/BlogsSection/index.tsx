@@ -1,13 +1,17 @@
 "use client";
-import image from "@/public/images/articalImage.png";
+import { useBlogs } from "@/hooks/useApi";
 import { Carousel, CarouselApi, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { useEffect, useState } from "react";
 import { BlogCard } from "@/components/shared/Cards/BlogCard";
 import Link from "next/link";
+
 export default function BlogsSection() {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
+  
+  const { data: blogsData, isLoading, error } = useBlogs({ limit: 6 });
+  const blogs = blogsData?.data || [];
 
   useEffect(() => {
     if (!api) return;
@@ -30,6 +34,19 @@ export default function BlogsSection() {
           </h3>
         </div>
 
+        {isLoading && (
+          <div className="flex justify-center items-center py-20">
+            <div className="text-lg text-dark-gray">جاري تحميل المقالات...</div>
+          </div>
+        )}
+
+        {error && (
+          <div className="flex justify-center items-center py-20">
+            <div className="text-lg text-red-500">حدث خطأ في تحميل المقالات</div>
+          </div>
+        )}
+
+        {!isLoading && !error && blogs.length > 0 && (
         <Carousel
           setApi={setApi}
           className=""
@@ -40,14 +57,14 @@ export default function BlogsSection() {
           }}
         >
           <CarouselContent className="">
-            {Array.from({ length: 6 }).map((_, index) => (
+            {blogs.map((blog, index) => (
               <CarouselItem key={index} className="basis-1/1  md:basis-1/2 lg:basis-1/3">
                 <BlogCard
-                  image={image}
-                  title="عنوان المقالة"
-                  description="لوريم إيبسوم(Lorem Ipsum) هو ببساطة نص شكلي (بمعنى أن الغاية هي الشكل وليس المحتوى)"
-                  timeAgo="منذ 3 أيام"
-                  tags={["تكنولوجيا", "برمجة", "تصميم", "تطوير"]}
+                  image={blog.image || "/images/articalImage.png"}
+                  title={blog.title}
+                  description={blog.description}
+                  timeAgo={blog.time_ago}
+                  tags={blog.tags || []}
                 />
               </CarouselItem>
             ))}
@@ -65,6 +82,8 @@ export default function BlogsSection() {
             ))}
           </div>
         </Carousel>
+        )}
+
         <div className="flex items-center justify-center">
           <Link href="/blogs" className="px-6 py-[19px] h-[54px] flex items-center justify-center rounded-[10px] border border-second-primary-color text-second-primary-color text-base font-medium leading-[150%] tracking-[-0.32px] hover:text-white hover:bg-second-primary-color cursor-pointer transition-all duration-300">
             عرض الكل

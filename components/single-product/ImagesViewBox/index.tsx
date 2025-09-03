@@ -7,9 +7,10 @@ import image2 from "@/public/images/image-view2.png";
 import image3 from "@/public/images/image-view3.png";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 
-export default function ImagesViewBox() {
-  const images = [image1, image2, image3, image1, image2];
-  const [selectedImage, setSelectedImage] = useState(image1);
+export default function ImagesViewBox({ images: productImages }) {
+  const defaultImages = [image1, image2, image3];
+  const images = productImages && productImages.length > 0 ? productImages : defaultImages;
+  const [selectedImage, setSelectedImage] = useState(images[0]);
 
   return (
     <div className="flex gap-4 h-[482px] overflow-y-hidden">

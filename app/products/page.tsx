@@ -1,39 +1,59 @@
-import ProductCard from "@/components/shared/Cards/ProductCard";
+import { useProducts } from "@/hooks/useApi";
 import ProductsHero from "@/components/shared/ProductsHero";
-import appServices from "@/lib/services";
-import { Meta, Product } from "@/models";
-import image from "@/public/images/image.jpg";
-export default async function page({ searchParams }: { searchParams: Promise<{ [key: string]: string }> }) {
-  const params = await searchParams;
-  const filter = params;
-  console.log(filter.filter, "search params from products page");
-  const data = await appServices.getProductFilterSRR(filter?.filter ?? "");
-  const productLatest = data?.data?.data || ([] as Product[]);
-  const paginationData = data?.data?.meta || ({} as Meta);
-  const isData = productLatest.length;
-  
+import ProductCard from "@/components/shared/Cards/ProductCard";
+
+export default function page({ searchParams }) {
   return (
     <div>
-      <ProductsHero
-        isData={!!isData}
-        meta={paginationData}
-        title="منتجات ديوكسا"
-        subtitle="استعدي لإضافة لمسة ساحرة الى بيتك ف لا مكان مثل البيت"
-        buttons={["الكل", "الاكثر طلبا", "عنايه بالبشره", "منتجات طبيعيه"]}
-      >
-        <div className=" mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
-          {productLatest?.map(({ id, in_stock, description, name }) => (
+      <ProductsContent searchParams={searchParams} />
+    </div>
+  );
+}
+
+function ProductsContent({ searchParams }) {
+  const filter = searchParams?.filter || "";
+  const { data: productsData, isLoading, error } = useProducts({ 
+    category: filter === "latest" ? undefined : filter,
+    featured: filter === "featured" ? true : undefined 
+  });
+  
+  const productLatest = productsData?.data || [];
+  const isData = productLatest.length > 0;
+
+  return (
+    <ProductsHero
+      isData={isData}
+      meta={undefined}
+      title="منتجات ديوكسا"
+      subtitle="استعدي لإضافة لمسة ساحرة الى بيتك ف لا مكان مثل البيت"
+      buttons={["الكل", "الاكثر طلبا", "عنايه بالبشره", "منتجات طبيعيه"]}
+    >
+      {isLoading && (
+        <div className="flex justify-center items-center py-20">
+          <div className="text-lg text-dark-gray">جاري تحميل المنتجات...</div>
+        </div>
+      )}
+
+      {error && (
+        <div className="flex justify-center items-center py-20">
+          <div className="text-lg text-red-500">حدث خطأ في تحميل المنتجات</div>
+        </div>
+      )}
+
+      {!isLoading && !error && (
+        <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {productLatest.map((product) => (
             <ProductCard
-              id={id.toString()}
-              in_stock={in_stock}
-              description={description}
-              image={image}
-              title={name}
-              key={id}
+              key={product.id}
+              id={product.id}
+              in_stock={product.in_stock || 0}
+              description={product.description}
+              image={product.main_image || "/images/image.jpg"}
+              title={product.title}
             />
           ))}
         </div>
-      </ProductsHero>
-    </div>
+      )}
+    </ProductsHero>
   );
 }

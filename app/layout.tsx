@@ -3,7 +3,7 @@ import { IBM_Plex_Sans_Arabic } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import AppProvider from "./appProvider";
+import ReactQueryProvider from "@/components/ReactQueryProvider";
 const geistIBM = IBM_Plex_Sans_Arabic({
   variable: "--font-ibm",
   subsets: ["arabic"],
@@ -24,7 +24,7 @@ export default function RootLayout({
     <html lang="ar" dir="rtl">
       <body className={`${geistIBM.variable} antialiased`}>
         <Navbar />
-        <AppProvider>{children}</AppProvider>
+        <ReactQueryProvider>{children}</ReactQueryProvider>
         <Footer />
       </body>
     </html>

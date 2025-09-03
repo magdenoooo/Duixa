@@ -2,7 +2,29 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["https://dieuxeg.com/"],
+    domains: ["dieuxeg.com", "api.dieuxeg.com"],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'api.dieuxeg.com',
+        port: '',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'dieuxeg.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'https://api.dieuxeg.com/api/:path*',
+      },
+    ];
   },
   /* config options here */
   webpack(config) {

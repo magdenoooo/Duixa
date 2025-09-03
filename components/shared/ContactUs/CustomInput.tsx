@@ -1,7 +1,7 @@
 import { Controller, useFormContext } from "react-hook-form";
 import { SchemaType } from ".";
 interface Props {
-  name: "phone" | "email" | "message" | "fullName";
+  name: "phone_number" | "email" | "message" | "full_name";
   icon: any;
   placeholder: string;
   area?: boolean;

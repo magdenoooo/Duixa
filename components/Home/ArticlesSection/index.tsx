@@ -1,17 +1,34 @@
 "use client";
 
-import ProductCard from "@/components/shared/Cards/ProductCard";
+import { useFeaturedProducts } from "@/hooks/useApi";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
-import useProductQuery from "@/hooks/useProductsQuery";
-import image from "@/public/images/art.png";
+import ProductCard from "@/components/shared/Cards/ProductCard";
 import Rascoda from "@/public/images/Frame 1410124004.png";
 import nour from "@/public/images/Frame 1597880977.png";
 import StripeLogo from "@/public/images/Stripe Logo.png";
 import Image from "next/image";
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import { CarouselApi } from "@/components/ui/carousel";
+
 export default function DuxProducts() {
-  const { api, current, count, setApi, productLatest } = useProductQuery({ isHome: true });
-  console.log(productLatest, "from home");
+  const [api, setApi] = useState();
+  const [current, setCurrent] = useState(0);
+  const [count, setCount] = useState(0);
+  
+  const { data: productsData, isLoading, error } = useFeaturedProducts(6);
+  const productLatest = productsData?.data || [];
+
+  useEffect(() => {
+    if (!api) return;
+
+    setCount(api.scrollSnapList().length);
+    setCurrent(api.selectedScrollSnap() + 1);
+
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap() + 1);
+    });
+  }, [api]);
 
   return (
     <div className="bg-white mt-[63px]">
@@ -32,6 +49,19 @@ export default function DuxProducts() {
           </h3>
         </div>
 
+        {isLoading && (
+          <div className="flex justify-center items-center py-20">
+            <div className="text-lg text-dark-gray">جاري تحميل المنتجات...</div>
+          </div>
+        )}
+
+        {error && (
+          <div className="flex justify-center items-center py-20">
+            <div className="text-lg text-red-500">حدث خطأ في تحميل المنتجات</div>
+          </div>
+        )}
+
+        {!isLoading && !error && productLatest.length > 0 && (
         <Carousel
           setApi={setApi}
           className=""
@@ -42,14 +72,14 @@ export default function DuxProducts() {
           }}
         >
           <CarouselContent className="">
-            {productLatest?.flatMap(({ id, description, name, in_stock }, index) => (
+            {productLatest.map((product, index) => (
               <CarouselItem key={index} className="basis-1/1  md:basis-1/2 lg:basis-1/3">
                 <ProductCard
-                  id={id.toString()}
-                  in_stock={in_stock}
-                  image={image}
-                  title={name}
-                  description={description}
+                  id={product.id}
+                  in_stock={product.in_stock || 0}
+                  image={product.main_image || "/images/art.png"}
+                  title={product.title}
+                  description={product.description}
                 />
               </CarouselItem>
             ))}
@@ -67,6 +97,8 @@ export default function DuxProducts() {
             ))}
           </div>
         </Carousel>
+        )}
+
         <div className="flex items-center justify-center">
           <Link
             href="/products"

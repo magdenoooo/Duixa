@@ -14,9 +14,10 @@ interface Props {
   rating?: number;
   totalRating?: number;
   isProduct?: boolean;
+  product?: any;
 }
 
-export default function SideCard({ price, rating, totalRating, isProduct }: Props) {
+export default function SideCard({ price, rating, totalRating, isProduct, product }: Props) {
   const handleShare = (platform?: "whatsapp") => {
     const shareData = {
       title: "منتج رائع",
@@ -66,19 +67,36 @@ export default function SideCard({ price, rating, totalRating, isProduct }: Prop
           <h3 className="text-center text-dark-gray text-base tracking-[0.16px]">
             روابط شراء المنتج
           </h3>
-          <div className="flex items-center gap-[10px]">
-            <button className="px-[30px] py-[16px] bg-orange flex items-center justify-center gap-[10px] rounded-full h-[52px] border border-border text-base font-medium text-white">
-              رابط المنتج أمازون
-              <Amazon />
-            </button>
-            <button className="px-[30px] py-[16px] bg-yellow flex items-center justify-center gap-[10px] rounded-full h-[52px] border border-border text-base font-medium text-[#383B42]">
-              رابط المنتج نون
-              <Noon />
-            </button>
-          </div>
-          <button className="px-[30px] py-[16px] bg-foreground flex items-center justify-center gap-[10px] rounded-full h-[52px] border border-border text-base font-medium text-white">
-            رابط اخر لجوجل
-          </button>
+          
+          {product?.purchase_links && product.purchase_links.length > 0 ? (
+            <div className="flex flex-col gap-[10px]">
+              {product.purchase_links.map((link, index) => (
+                <a
+                  key={index}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-[30px] py-[16px] flex items-center justify-center gap-[10px] rounded-full h-[52px] border border-border text-base font-medium text-white transition-all duration-300 hover:opacity-90"
+                  style={{ backgroundColor: link.color }}
+                >
+                  {link.name}
+                  {link.name.includes('أمازون') && <Amazon />}
+                  {link.name.includes('نون') && <Noon />}
+                </a>
+              ))}
+            </div>
+          ) : (
+            <div className="flex items-center gap-[10px]">
+              <button className="px-[30px] py-[16px] bg-orange flex items-center justify-center gap-[10px] rounded-full h-[52px] border border-border text-base font-medium text-white">
+                رابط المنتج أمازون
+                <Amazon />
+              </button>
+              <button className="px-[30px] py-[16px] bg-yellow flex items-center justify-center gap-[10px] rounded-full h-[52px] border border-border text-base font-medium text-[#383B42]">
+                رابط المنتج نون
+                <Noon />
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -88,14 +106,23 @@ export default function SideCard({ price, rating, totalRating, isProduct }: Prop
           <span className="text-base font-medium leading-[100%] text-dark-gray">كاتوجري</span>
         </div>
         <div className="grid grid-cols-5 gap-[10px]">
-          {Array.from({ length: 16 }).map((_, index) => (
+          {product?.categories ? product.categories.map((category, index) => (
             <span
               key={index}
               className="text-base leading-[24px] px-[10px] py-[5px] flex items-center justify-center border border-border bg-background rounded-[10px] text-dark-gray"
             >
-              غسيل
+              {category.name}
             </span>
-          ))}
+          )) : (
+            Array.from({ length: 3 }).map((_, index) => (
+              <span
+                key={index}
+                className="text-base leading-[24px] px-[10px] py-[5px] flex items-center justify-center border border-border bg-background rounded-[10px] text-dark-gray"
+              >
+                غسيل
+              </span>
+            ))
+          )}
         </div>
       </div>
 
