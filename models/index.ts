@@ -4,6 +4,22 @@ export interface ResponseApi<T> {
   message: string;
 }
 
+export interface QueryListData<T> {
+  success: boolean;
+  data: T[];
+  message: string;
+  count: number;
+  meta: Meta | null;
+  isSeedData?: boolean;
+}
+
+export interface QuerySingleData<T> {
+  success: boolean;
+  data: T;
+  message: string;
+  isSeedData?: boolean;
+}
+
 export interface PaginatedResponse<T> {
   success: boolean;
   data: {
