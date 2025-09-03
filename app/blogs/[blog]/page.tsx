@@ -1,19 +1,12 @@
+"use client";
+
 import React from "react";
 import { useBlog } from "@/hooks/useApi";
 import SingleCard from "@/components/single-product/SideCard";
 import Image from "next/image";
 
-export default function page({ params }) {
+export default function BlogPage({ params }) {
   const blogId = params?.blog;
-  
-  return (
-    <>
-      <BlogPageContent blogId={blogId} />
-    </>
-  );
-}
-
-function BlogPageContent({ blogId }) {
   const { data: blogData, isLoading, error } = useBlog(blogId);
   const blog = blogData?.data;
 
