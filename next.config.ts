@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
       'www.pexels.com',
       'api.dieuxeg.com',
       'dieuxeg.com',
+       "images.pexels.com",
       'localhost'
     ],
     remotePatterns: [
