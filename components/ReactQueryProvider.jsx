@@ -9,16 +9,28 @@ export default function ReactQueryProvider({ children }) {
     defaultOptions: {
       queries: {
         staleTime: 5 * 60 * 1000, // 5 minutes
-        gcTime: 10 * 60 * 1000, // 10 minutes (updated from cacheTime)
-        retry: 3,
+        gcTime: 10 * 60 * 1000, // 10 minutes
+        retry: (failureCount, error) => {
+          // لا تعيد المحاولة للأخطاء 404
+          if (error?.status === 404) return false;
+          // أعد المحاولة حتى 3 مرات للأخطاء الأخرى
+          return failureCount < 3;
+        },
         retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
         refetchOnWindowFocus: false,
         refetchOnMount: true,
         refetchOnReconnect: true,
+        // إضافة error handling محسن
+        onError: (error) => {
+          console.error('React Query Error:', error);
+        },
       },
       mutations: {
         retry: 1,
         retryDelay: 1000,
+        onError: (error) => {
+          console.error('React Query Mutation Error:', error);
+        },
       },
     },
   }));
@@ -26,7 +38,11 @@ export default function ReactQueryProvider({ children }) {
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      <ReactQueryDevtools initialIsOpen={false} />
+      <ReactQueryDevtools 
+        initialIsOpen={false} 
+        buttonPosition="bottom-left"
+        position="bottom"
+      />
     </QueryClientProvider>
   );
 }
