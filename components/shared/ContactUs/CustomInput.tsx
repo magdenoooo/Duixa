@@ -14,50 +14,50 @@ export default function CustomInput({ name, icon, placeholder, area, isHome }: P
   
   if (!area) {
     return (
-      <Controller
-        name={name}
-        control={control}
-        render={({ field }) => (
-          <div className="relative flex flex-col gap-2">
-            <label htmlFor={name} className="absolute top-[45%] translate-y-[-50%] right-[24px]">
-              {icon}
-            </label>
+      <div className="relative flex flex-col gap-2">
+        <label htmlFor={name} className="absolute top-[45%] translate-y-[-50%] right-[24px] z-10">
+          {icon}
+        </label>
+        <Controller
+          name={name}
+          control={control}
+          render={({ field }) => (
             <input
               id={name}
               {...field}
-              className={`${isHome ? "bg-background" : "bg-white"} border border-border p-[24px] w-full rounded-[15px] pr-[64px] placeholder:text-dark-gray caret-second-primary-color`}
-              type="text"
+              className={`${isHome ? "bg-background" : "bg-white"} border border-border p-[24px] w-full rounded-[15px] pr-[64px] placeholder:text-dark-gray caret-second-primary-color focus:outline-none focus:border-second-primary-color`}
+              type={name === "email" ? "email" : "text"}
               placeholder={placeholder}
             />
-            {formState.errors[name]?.message && (
-              <span className="text-red-500 text-sm">{formState.errors[name]?.message}</span>
-            )}
-          </div>
+          )}
+        />
+        {formState.errors[name]?.message && (
+          <span className="text-red-500 text-sm">{formState.errors[name]?.message}</span>
         )}
-      />
+      </div>
     );
   } else {
     return (
-      <Controller
-        name={name}
-        control={control}
-        render={({ field }) => (
-          <div className="relative flex flex-col gap-2">
-            <label htmlFor={name} className="absolute top-[22px] right-[23px]">
-              {icon}
-            </label>
+      <div className="relative flex flex-col gap-2">
+        <label htmlFor={name} className="absolute top-[22px] right-[23px] z-10">
+          {icon}
+        </label>
+        <Controller
+          name={name}
+          control={control}
+          render={({ field }) => (
             <textarea
               id={name}
               {...field}
-              className={`${isHome ? "bg-background" : "bg-white"} border border-border p-[24px] w-full h-[295px] rounded-[15px] pr-[64px] placeholder:text-dark-gray caret-second-primary-color`}
+              className={`${isHome ? "bg-background" : "bg-white"} border border-border p-[24px] w-full h-[295px] rounded-[15px] pr-[64px] placeholder:text-dark-gray caret-second-primary-color focus:outline-none focus:border-second-primary-color resize-none`}
               placeholder={placeholder}
             />
-            {formState.errors[name]?.message && (
-              <span className="text-red-500 text-sm">{formState.errors[name]?.message}</span>
-            )}
-          </div>
+          )}
+        />
+        {formState.errors[name]?.message && (
+          <span className="text-red-500 text-sm">{formState.errors[name]?.message}</span>
         )}
-      />
+      </div>
     );
   }
 }

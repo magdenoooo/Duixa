@@ -12,7 +12,7 @@ export const QUERY_KEYS = {
   SEARCH: 'search',
 };
 
-// Products Hooks
+// Products Hooks - مطابق لـ api.md
 export const useProducts = (params = {}) => {
   return useQuery({
     queryKey: [QUERY_KEYS.PRODUCTS, params],
@@ -21,7 +21,7 @@ export const useProducts = (params = {}) => {
       return response;
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
-    cacheTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes (updated from cacheTime)
   });
 };
 
@@ -34,7 +34,7 @@ export const useProduct = (id) => {
     },
     enabled: !!id,
     staleTime: 5 * 60 * 1000,
-    cacheTime: 10 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 };
 
@@ -48,11 +48,11 @@ export const useFeaturedProducts = (limit = 6) => {
       return response;
     },
     staleTime: 5 * 60 * 1000,
-    cacheTime: 10 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 };
 
-// Categories Hooks
+// Categories Hooks - مطابق لـ api.md
 export const useCategories = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.CATEGORIES],
@@ -61,7 +61,7 @@ export const useCategories = () => {
       return response;
     },
     staleTime: 10 * 60 * 1000, // Categories don't change often
-    cacheTime: 30 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   });
 };
 
@@ -73,7 +73,7 @@ export const useCategoriesWithCount = () => {
       return response;
     },
     staleTime: 10 * 60 * 1000,
-    cacheTime: 30 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   });
 };
 
@@ -86,11 +86,11 @@ export const useProductsByCategory = (categoryId, params = {}) => {
     },
     enabled: !!categoryId,
     staleTime: 5 * 60 * 1000,
-    cacheTime: 10 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 };
 
-// Blogs Hooks
+// Blogs Hooks - مطابق لـ api.md
 export const useBlogs = (params = {}) => {
   return useQuery({
     queryKey: [QUERY_KEYS.BLOGS, params],
@@ -99,7 +99,7 @@ export const useBlogs = (params = {}) => {
       return response;
     },
     staleTime: 5 * 60 * 1000,
-    cacheTime: 10 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 };
 
@@ -112,11 +112,11 @@ export const useBlog = (id) => {
     },
     enabled: !!id,
     staleTime: 5 * 60 * 1000,
-    cacheTime: 10 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 };
 
-// Contact Mutation
+// Contact Mutation - مطابق لـ api.md
 export const useContact = () => {
   const queryClient = useQueryClient();
   
@@ -135,7 +135,7 @@ export const useContact = () => {
   });
 };
 
-// Search Hook
+// Search Hook - مطابق لـ api.md
 export const useSearch = (query) => {
   return useQuery({
     queryKey: [QUERY_KEYS.SEARCH, query],
@@ -147,11 +147,11 @@ export const useSearch = (query) => {
     },
     enabled: !!query && query.length > 2, // البحث فقط إذا كان النص أكثر من حرفين
     staleTime: 2 * 60 * 1000, // 2 minutes for search results
-    cacheTime: 5 * 60 * 1000,
+    gcTime: 5 * 60 * 1000,
   });
 };
 
-// Statistics Hook
+// Statistics Hook - مطابق لـ api.md
 export const useStats = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.STATS],
@@ -160,7 +160,7 @@ export const useStats = () => {
       return response;
     },
     staleTime: 15 * 60 * 1000, // 15 minutes
-    cacheTime: 30 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   });
 };
 
@@ -185,8 +185,9 @@ export const useProductsInfinite = (limit = 10, filters = {}) => {
       }
       return allPages.length + 1;
     },
+    initialPageParam: 1,
     staleTime: 5 * 60 * 1000,
-    cacheTime: 10 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 };
 
@@ -210,7 +211,8 @@ export const useBlogsInfinite = (limit = 10, filters = {}) => {
       }
       return allPages.length + 1;
     },
+    initialPageParam: 1,
     staleTime: 5 * 60 * 1000,
-    cacheTime: 10 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
   });
 };

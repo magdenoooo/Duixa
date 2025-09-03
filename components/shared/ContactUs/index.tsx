@@ -19,7 +19,7 @@ const schema = yup.object().shape({
 
 export type SchemaType = yup.InferType<typeof schema>;
 
-export default function Contact({ isHome }: { isHome?: boolean }) {
+export default function ContactUs({ isHome }: { isHome?: boolean }) {
   const contacts = [
     {
       icon: <Phone className="size-[42px]" />,
@@ -101,7 +101,7 @@ export default function Contact({ isHome }: { isHome?: boolean }) {
             <CustomInput
               isHome
               name="message"
-              placeholder="اكتب رسالتك هنا"
+              area
               placeholder="اكتب رسالتك هنا"
               icon={<ChatLine className="size-[35px]" />}
             />
@@ -125,8 +125,8 @@ export default function Contact({ isHome }: { isHome?: boolean }) {
         </FormProvider>
       )}
       {!isHome && (
-        <div className=" flex flex-col gap-[50px]">
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-[30px] ">
+        <div className="flex flex-col gap-[50px]">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-[30px]">
             <FormProvider {...form}>
               <form onSubmit={form.handleSubmit(handelSubmit)} className="grid grid-cols-1 gap-[19px]">
                 {submitStatus === 'success' && (
@@ -145,11 +145,11 @@ export default function Contact({ isHome }: { isHome?: boolean }) {
                   <CustomInput name="full_name" placeholder="اسمك بالكامل" icon={<User className="size-[35px]" />} />
                   <CustomInput name="phone_number" placeholder="رقم الهاتف" icon={<Phone className="size-[35px]" />} />
                 </div>
-                <CustomInput name="email" placeholder="الاميل الخاص بك" icon={<Email className="size-[30px] " />} />
+                <CustomInput name="email" placeholder="الاميل الخاص بك" icon={<Email className="size-[30px]" />} />
                 <CustomInput
                   name="message"
                   area
-                  placeholder="الاميل الخاص بك"
+                  placeholder="اكتب رسالتك هنا"
                   icon={<ChatLine className="size-[35px]" />}
                 />
                 <div className="flex gap-[20px]">
@@ -175,13 +175,13 @@ export default function Contact({ isHome }: { isHome?: boolean }) {
                 {contacts.map(({ icon, description, title }, index) => (
                   <div
                     key={index}
-                    className=" flex flex-col justify-center items-center py-[30px] bg-white rounded-[15px] gap-[15px]"
+                    className="flex flex-col justify-center items-center py-[30px] bg-white rounded-[15px] gap-[15px]"
                   >
                     <div className="bg-gradient-to-br from-[#f2f3f8] w-fit via-white to-white p-[24px] rounded-[15px] border border-border flex justify-center items-center">
                       {icon}
                     </div>
-                    <h5 className="text-[20px] leading-[32px] text-second-primary-color text-center"> {title} </h5>
-                    <p className="text-base text-dark-gray leading-[24px]">{description} </p>
+                    <h5 className="text-[20px] leading-[32px] text-second-primary-color text-center">{title}</h5>
+                    <p className="text-base text-dark-gray leading-[24px]">{description}</p>
                   </div>
                 ))}
               </div>
@@ -189,7 +189,7 @@ export default function Contact({ isHome }: { isHome?: boolean }) {
             </div>
           </div>
           <div>
-            <div className="flex flex-col items-center text-center gap-[20px] ">
+            <div className="flex flex-col items-center text-center gap-[20px]">
               <h2 className="text48 text-center leading-[130%] tracking-[-1.44px]">فروعنا</h2>
               <h3 className="text20 text-center leading-[147%] tracking-[-0.6px] text-dark-gray max-w-[33%]">
                 لوريم إيبسوم(Lorem Ipsum) هو ببساطة نص شكلي (بمعنى أن الغاية هي الشكل وليس المحتوى)
@@ -199,14 +199,14 @@ export default function Contact({ isHome }: { isHome?: boolean }) {
               {Array.from({ length: 6 }).map((_, index) => {
                 return (
                   <div key={index} className="bg-white flex items-center gap-[15px] p-[30px] rounded-[15px] border border-border-primary hover:scale-95 transition-all cursor-pointer duration-300">
-                      <div className="flex items-center justify-center p-6 size-[96px] rounded-[15px] border border-border-primary">
-                        <Location className="size-[42px]" />
-                      </div>
-                      <div className="flex-1 flex flex-col gap-[15px]">
-                        <h3 className="text20 leading-8 text-text-dark ">الوكيشن التاني علي الخريطه</h3>
-                        <p className="text16 leading-6 text-description">فرع مدينة نصر: الحي العاشر، مدينة نصر، القاهرة، مصر.</p>
-                      </div>
-                      <ArrowLeft/>
+                    <div className="flex items-center justify-center p-6 size-[96px] rounded-[15px] border border-border-primary">
+                      <Location className="size-[42px]" />
+                    </div>
+                    <div className="flex-1 flex flex-col gap-[15px]">
+                      <h3 className="text20 leading-8 text-text-dark">الوكيشن التاني علي الخريطه</h3>
+                      <p className="text16 leading-6 text-description">فرع مدينة نصر: الحي العاشر، مدينة نصر، القاهرة، مصر.</p>
+                    </div>
+                    <ArrowLeft/>
                   </div>
                 );
               })}
