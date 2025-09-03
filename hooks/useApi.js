@@ -320,5 +320,3 @@ export const useBlogsInfinite = (limit = 10, filters = {}) => {
     retry: 3,
   });
 };
-
-export { useFeaturedProducts };
