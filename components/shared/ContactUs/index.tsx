@@ -4,7 +4,6 @@ import { Section } from "@/components/shared";
 import * as yup from "yup";
 import { SubmitHandler, useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import CustomInput from "./CustomInput";
 import { Phone, Email, User, ChatLine, Location, ArrowLeft } from "@/public/svg";
 import map from "@/public/images/_Google maps mockup.png";
 import Image from "next/image";
@@ -18,6 +17,54 @@ const schema = yup.object().shape({
 });
 
 export type SchemaType = yup.InferType<typeof schema>;
+
+// مكون Input بسيط
+function CustomInput({ name, icon, placeholder, area, isHome }: {
+  name: "phone_number" | "email" | "message" | "full_name";
+  icon: any;
+  placeholder: string;
+  area?: boolean;
+  isHome?: boolean;
+}) {
+  const { register, formState } = useForm<SchemaType>();
+  
+  if (!area) {
+    return (
+      <div className="relative flex flex-col gap-2">
+        <label htmlFor={name} className="absolute top-[45%] translate-y-[-50%] right-[24px] z-10">
+          {icon}
+        </label>
+        <input
+          id={name}
+          {...register(name)}
+          className={`${isHome ? "bg-background" : "bg-white"} border border-border p-[24px] w-full rounded-[15px] pr-[64px] placeholder:text-dark-gray caret-second-primary-color focus:outline-none focus:border-second-primary-color`}
+          type={name === "email" ? "email" : "text"}
+          placeholder={placeholder}
+        />
+        {formState.errors[name]?.message && (
+          <span className="text-red-500 text-sm">{formState.errors[name]?.message}</span>
+        )}
+      </div>
+    );
+  } else {
+    return (
+      <div className="relative flex flex-col gap-2">
+        <label htmlFor={name} className="absolute top-[22px] right-[23px] z-10">
+          {icon}
+        </label>
+        <textarea
+          id={name}
+          {...register(name)}
+          className={`${isHome ? "bg-background" : "bg-white"} border border-border p-[24px] w-full h-[295px] rounded-[15px] pr-[64px] placeholder:text-dark-gray caret-second-primary-color focus:outline-none focus:border-second-primary-color resize-none`}
+          placeholder={placeholder}
+        />
+        {formState.errors[name]?.message && (
+          <span className="text-red-500 text-sm">{formState.errors[name]?.message}</span>
+        )}
+      </div>
+    );
+  }
+}
 
 export default function ContactUs({ isHome }: { isHome?: boolean }) {
   const contacts = [

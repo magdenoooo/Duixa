@@ -1,6 +1,6 @@
 "use client";
 
-import { useFeaturedProducts } from "@/hooks/useApi";
+import { useProducts } from "@/hooks/useApi";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import ProductCard from "@/components/shared/Cards/ProductCard";
 import Rascoda from "@/public/images/Frame 1410124004.png";
@@ -12,11 +12,11 @@ import { useState, useEffect } from "react";
 import { CarouselApi } from "@/components/ui/carousel";
 
 export default function DuxProducts() {
-  const [api, setApi] = useState();
+  const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
   
-  const { data: productsData, isLoading, error } = useFeaturedProducts(6);
+  const { data: productsData, isLoading, error } = useProducts({ limit: 6, featured: true });
   const productLatest = productsData?.data || [];
 
   useEffect(() => {
@@ -75,9 +75,9 @@ export default function DuxProducts() {
             {productLatest.map((product, index) => (
               <CarouselItem key={index} className="basis-1/1  md:basis-1/2 lg:basis-1/3">
                 <ProductCard
-                  id={product.id}
+                  id={product.id.toString()}
                   in_stock={product.in_stock || 0}
-                  image={product.main_image || "/images/art.png"}
+                  image={product.main_image || "/images/articalImage.png"}
                   title={product.title}
                   description={product.description}
                 />
