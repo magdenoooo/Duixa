@@ -24,11 +24,16 @@ export const CategoryCard = ({
   shippingDate = "30 أبريل",
   tags = ["غسيل", "مسحوق", "تنظيف"],
 }: ProductCardProps) => {
+  // التأكد من أن الصورة صالحة أو استخدام صورة افتراضية
+  const imageUrl = typeof image === 'string' && image.startsWith('http') 
+    ? image 
+    : "https://images.pexels.com/photos/4239091/pexels-photo-4239091.jpeg";
+
   return (
     <div className="bg-white p-5 rounded-[15px] shadow-[0px_4px_54px_0px_rgba(0,0,0,0.05)] flex flex-col gap-[12px] hover:scale-105 transition-all duration-300">
       {/* Image */}
       <div className="flex items-center justify-center  h-[286px]">
-        <Image src={image} alt={title} className="" width={186} height={286} />
+        <Image src={imageUrl} alt={title} className="" width={186} height={286} />
       </div>
 
       {/* Content */}

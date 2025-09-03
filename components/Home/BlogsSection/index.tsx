@@ -49,7 +49,6 @@ export default function BlogsSection() {
         {!isLoading && !error && blogs.length > 0 && (
         <Carousel
           setApi={setApi}
-          className=""
           opts={{
             direction: "rtl",
             loop: true,
@@ -60,7 +59,7 @@ export default function BlogsSection() {
             {blogs.map((blog, index) => (
               <CarouselItem key={index} className="basis-1/1  md:basis-1/2 lg:basis-1/3">
                 <BlogCard
-                  image={blog.image || "https://images.pexels.com/photos/267350/pexels-photo-267350.jpeg"}
+                  image={blog.image || "https://images.pexels.com/photos/1040173/pexels-photo-1040173.jpeg"}
                   title={blog.title}
                   description={blog.description || blog.subTitle || ""}
                   timeAgo={blog.time_ago}
@@ -82,6 +81,12 @@ export default function BlogsSection() {
             ))}
           </div>
         </Carousel>
+        )}
+
+        {!isLoading && !error && blogs.length === 0 && (
+          <div className="flex justify-center items-center py-20">
+            <div className="text-lg text-dark-gray">لا توجد مقالات متاحة حالياً</div>
+          </div>
         )}
 
         <div className="flex items-center justify-center">

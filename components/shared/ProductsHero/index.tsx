@@ -82,7 +82,13 @@ export default function ProductsHero({ buttons, subtitle, title, children, isWhi
 
         {isData ? children: <div className="h-screen flex justify-center text-30 font-semibold text-description"> لا يوجد نتائج لعرضها </div> }
 
-        { meta && isData && <Pagination currentPage={meta.current_page} onPageChange={() => {}} totalPages={meta.last_page} />}
+        {meta && isData && (
+          <Pagination 
+            currentPage={meta.current_page} 
+            onPageChange={() => {}} 
+            totalPages={meta.last_page} 
+          />
+        )}
       </div>
     </Section>
   );

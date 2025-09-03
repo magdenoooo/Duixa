@@ -11,9 +11,14 @@ interface BlogCardProps {
 }
 
 export function BlogCard({ image, title, description, timeAgo, tags }: BlogCardProps) {
+  // التأكد من أن الصورة صالحة أو استخدام صورة افتراضية
+  const imageUrl = typeof image === 'string' && image.startsWith('http') 
+    ? image 
+    : "https://images.pexels.com/photos/1040173/pexels-photo-1040173.jpeg";
+
   return (
     <div className="flex flex-col gap-[15px] p-[25px] rounded-[15px] bg-white border border-border transition-all duration-300 hover:scale-105 hover:shadow-[0px_14px_30px_0px_rgba(0,0,0,0.03)] ">
-      <Image src={image} alt="image" width={462.7} height={289} className="w-full rounded-[10px]" />
+      <Image src={imageUrl} alt="image" width={462.7} height={289} className="w-full rounded-[10px]" />
       <div className="flex items-center gap-[6px] justify-start">
         <ClockCircle />
         <p className="text-dark-gray text-right text-sm leading-[25px]">{timeAgo}</p>

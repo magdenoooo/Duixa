@@ -1,6 +1,6 @@
 "use client";
 
-import { useProducts } from "@/hooks/useApi";
+import { useFeaturedProducts } from "@/hooks/useApi";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import ProductCard from "@/components/shared/Cards/ProductCard";
 import Rascoda from "@/public/images/Frame 1410124004.png";
@@ -16,7 +16,7 @@ export default function DuxProducts() {
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
   
-  const { data: productsData, isLoading, error } = useProducts({ limit: 6, featured: true });
+  const { data: productsData, isLoading, error } = useFeaturedProducts(6);
   const productLatest = productsData?.data || [];
 
   useEffect(() => {
