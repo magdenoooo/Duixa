@@ -8,9 +8,10 @@ interface BlogCardProps {
   description: string;
   timeAgo?: string;
   tags?: string[];
+  id?: string;
 }
 
-export function BlogCard({ image, title, description, timeAgo, tags }: BlogCardProps) {
+export function BlogCard({ image, title, description, timeAgo, tags, id }: BlogCardProps) {
   // التأكد من أن الصورة صالحة أو استخدام صورة افتراضية
   const imageUrl = typeof image === 'string' && image.startsWith('http') 
     ? image 
@@ -33,12 +34,16 @@ export function BlogCard({ image, title, description, timeAgo, tags }: BlogCardP
             <span className="px-[10px] py-[5px] rounded-[10px] bg-background border border-border text-base leading-[24px]">
               {tags[0]}
             </span>
-            <span className="px-[10px] py-[5px] rounded-[10px] bg-background border border-border text-base leading-[24px]">
-              {tags[1]}
-            </span>
-            <span className="px-[10px] py-[5px] rounded-[10px] bg-background border border-border text-base leading-[24px]">
-              {tags[2]}
-            </span>
+            {tags[1] && (
+              <span className="px-[10px] py-[5px] rounded-[10px] bg-background border border-border text-base leading-[24px]">
+                {tags[1]}
+              </span>
+            )}
+            {tags[2] && (
+              <span className="px-[10px] py-[5px] rounded-[10px] bg-background border border-border text-base leading-[24px]">
+                {tags[2]}
+              </span>
+            )}
             {tags.length > 3 && (
               <span className="px-[10px] py-[5px] rounded-[10px] bg-background border border-border text-base leading-[24px]">
                 {tags.length - 3}+
@@ -47,7 +52,7 @@ export function BlogCard({ image, title, description, timeAgo, tags }: BlogCardP
           </>
         )}
       </div>
-      <Link href={""} className="p-[10px] bg-second-primary-color rounded-[10px] h-[48px] text-white flex items-center justify-center text-base leading-[150%]">
+      <Link href={id ? `/blogs/${id}` : "#"} className="p-[10px] bg-second-primary-color rounded-[10px] h-[48px] text-white flex items-center justify-center text-base leading-[150%]">
         عرض تفاصيل اكثر
       </Link>
     </div>

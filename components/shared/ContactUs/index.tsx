@@ -18,7 +18,7 @@ const schema = yup.object().shape({
 
 export type SchemaType = yup.InferType<typeof schema>;
 
-// مكون Input بسيط
+// مكون Input محسن
 function CustomInput({ name, icon, placeholder, area, isHome }: {
   name: "phone_number" | "email" | "message" | "full_name";
   icon: any;
@@ -26,7 +26,7 @@ function CustomInput({ name, icon, placeholder, area, isHome }: {
   area?: boolean;
   isHome?: boolean;
 }) {
-  const { register, formState } = useForm<SchemaType>();
+  const { register, formState } = useFormContext<SchemaType>();
   
   if (!area) {
     return (

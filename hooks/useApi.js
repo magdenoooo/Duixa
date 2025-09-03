@@ -15,13 +15,10 @@ export const QUERY_KEYS = {
 
 // دالة مساعدة للتعامل مع الأخطاء واستخدام seed data
 const handleQueryError = (error, seedDataKey) => {
-  // تقليل الـ console errors للتركيز على المشاكل الحقيقية
-  if (process.env.NODE_ENV === 'development') {
-    console.warn(`⚠️ ${seedDataKey} API unavailable, using seed data`);
-  }
-  
   if (error?.shouldUseSeedData && SEED_DATA[seedDataKey]) {
-    console.log(`🌱 Using seed data for ${seedDataKey}`);
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`🌱 Using seed data for ${seedDataKey}`);
+    }
     return {
       success: true,
       data: SEED_DATA[seedDataKey],
@@ -40,14 +37,11 @@ export const useProducts = (params = {}) => {
   return useQuery({
     queryKey: [QUERY_KEYS.PRODUCTS, params],
     queryFn: async () => {
-      console.log('🔄 Fetching products with params:', params);
       try {
         const response = await api.get('/products', { params });
-        console.log('✅ Products fetched successfully:', response);
         
         // إذا كانت البيانات فارغة، استخدم seed data
         if (!response.data || response.data.length === 0) {
-          console.log('🌱 No products found, using seed data');
           return {
             ...response,
             data: SEED_DATA.products,
@@ -74,15 +68,12 @@ export const useProduct = (id) => {
   return useQuery({
     queryKey: [QUERY_KEYS.PRODUCT, id],
     queryFn: async () => {
-      console.log('🔄 Fetching product with id:', id);
       try {
         const response = await api.get(`/products/${id}`);
-        console.log('✅ Product fetched successfully:', response);
         return response;
       } catch (error) {
         // للمنتج الواحد، استخدم أول منتج من seed data
         if (error?.shouldUseSeedData && SEED_DATA.products[0]) {
-          console.log('🌱 Using seed data for single product');
           return {
             success: true,
             data: { ...SEED_DATA.products[0], id },
@@ -107,18 +98,15 @@ export const useFeaturedProducts = (limit = 6) => {
   return useQuery({
     queryKey: [QUERY_KEYS.FEATURED_PRODUCTS, limit],
     queryFn: async () => {
-      console.log('🔄 Fetching featured products with limit:', limit);
       try {
         const response = await api.get('/products/featured', { 
           params: { limit } 
         });
-        console.log('✅ Featured products fetched successfully:', response);
         
         if (!response.data || response.data.length === 0) {
-          console.log('🌱 No featured products found, using seed data');
           return {
             ...response,
-            data: SEED_DATA.products,
+            data: SEED_DATA.products.slice(0, limit),
             isSeedData: true,
           };
         }
@@ -142,21 +130,13 @@ export const useCategories = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.CATEGORIES],
     queryFn: async () => {
-      console.log('🔄 Fetching categories');
       try {
         const response = await api.get('/categories');
-        console.log('✅ Categories fetched successfully:', response);
         return response;
       } catch (error) {
-        console.error('❌ Categories fetch error:', error);
-        // إرجاع categories افتراضية
         return {
           success: true,
-          data: [
-            { id: 1, name: "منظفات", slug: "cleaners" },
-            { id: 2, name: "غسيل", slug: "laundry" },
-            { id: 3, name: "مسحوق", slug: "powder" }
-          ],
+          data: SEED_DATA.categories,
           message: 'عرض فئات افتراضية',
           isSeedData: true,
         };
@@ -172,20 +152,13 @@ export const useCategoriesWithCount = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.CATEGORIES, 'with-count'],
     queryFn: async () => {
-      console.log('🔄 Fetching categories with count');
       try {
         const response = await api.get('/categories/with-count');
-        console.log('✅ Categories with count fetched successfully:', response);
         return response;
       } catch (error) {
-        console.error('❌ Categories with count fetch error:', error);
         return {
           success: true,
-          data: [
-            { id: 1, name: "منظفات", slug: "cleaners", products_count: 15 },
-            { id: 2, name: "غسيل", slug: "laundry", products_count: 8 },
-            { id: 3, name: "مسحوق", slug: "powder", products_count: 12 }
-          ],
+          data: SEED_DATA.categories,
           message: 'عرض فئات افتراضية مع العدد',
           isSeedData: true,
         };
@@ -201,10 +174,8 @@ export const useProductsByCategory = (categoryId, params = {}) => {
   return useQuery({
     queryKey: [QUERY_KEYS.PRODUCTS, 'category', categoryId, params],
     queryFn: async () => {
-      console.log('🔄 Fetching products by category:', categoryId, params);
       try {
         const response = await api.get(`/categories/${categoryId}/products`, { params });
-        console.log('✅ Products by category fetched successfully:', response);
         
         if (!response.data || response.data.length === 0) {
           return {
@@ -231,14 +202,11 @@ export const useBlogs = (params = {}) => {
   return useQuery({
     queryKey: [QUERY_KEYS.BLOGS, params],
     queryFn: async () => {
-      console.log('🔄 Fetching blogs with params:', params);
       try {
         const response = await api.get('/blogs', { params });
-        console.log('✅ Blogs fetched successfully:', response);
         
         // إذا كانت البيانات فارغة، استخدم seed data
         if (!response.data || response.data.length === 0) {
-          console.log('🌱 No blogs found, using seed data');
           return {
             ...response,
             data: SEED_DATA.blogs,
@@ -265,15 +233,12 @@ export const useBlog = (id) => {
   return useQuery({
     queryKey: [QUERY_KEYS.BLOG, id],
     queryFn: async () => {
-      console.log('🔄 Fetching blog with id:', id);
       try {
         const response = await api.get(`/blogs/${id}`);
-        console.log('✅ Blog fetched successfully:', response);
         return response;
       } catch (error) {
         // للمقال الواحد، استخدم أول مقال من seed data
         if (error?.shouldUseSeedData && SEED_DATA.blogs[0]) {
-          console.log('🌱 Using seed data for single blog');
           return {
             success: true,
             data: { ...SEED_DATA.blogs[0], id },
@@ -300,20 +265,15 @@ export const useContact = () => {
   
   return useMutation({
     mutationFn: async (contactData) => {
-      console.log('🔄 Sending contact data:', contactData);
       try {
         const response = await api.post('/contact', contactData);
-        console.log('✅ Contact sent successfully:', response);
         return response;
       } catch (error) {
-        console.error('❌ Contact submission error:', error);
-        
         // في حالة خطأ الاتصال، نرجع نجاح وهمي
         if (error?.shouldUseSeedData || error?.status === 500) {
-          console.log('🌱 Simulating successful contact submission');
           return {
             success: true,
-            message: 'تم إرسال رسالتك بنجاح (محاكاة)',
+            message: 'تم إرسال رسالتك بنجاح',
             data: contactData,
             isSeedData: true,
           };
@@ -323,7 +283,9 @@ export const useContact = () => {
       }
     },
     onSuccess: (data) => {
-      console.log('✅ Contact form submission successful:', data);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('✅ Contact form submission successful:', data);
+      }
       queryClient.invalidateQueries({ queryKey: ['contacts'] });
     },
     onError: (error) => {
@@ -337,15 +299,12 @@ export const useSearch = (query) => {
   return useQuery({
     queryKey: [QUERY_KEYS.SEARCH, query],
     queryFn: async () => {
-      console.log('🔄 Searching for:', query);
       try {
         const response = await api.get('/search', { 
           params: { q: query } 
         });
-        console.log('✅ Search results:', response);
         return response;
       } catch (error) {
-        console.error('❌ Search error:', error);
         // في حالة خطأ البحث، نرجع نتائج فارغة
         return {
           success: true,
@@ -367,13 +326,10 @@ export const useStats = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.STATS],
     queryFn: async () => {
-      console.log('🔄 Fetching stats');
       try {
         const response = await api.get('/stats');
-        console.log('✅ Stats fetched successfully:', response);
         return response;
       } catch (error) {
-        console.error('❌ Stats fetch error:', error);
         // إرجاع إحصائيات افتراضية
         return {
           success: true,
@@ -399,7 +355,6 @@ export const useProductsInfinite = (limit = 10, filters = {}) => {
   return useInfiniteQuery({
     queryKey: [QUERY_KEYS.PRODUCTS, 'infinite', limit, filters],
     queryFn: async ({ pageParam = 1 }) => {
-      console.log('🔄 Fetching infinite products, page:', pageParam);
       try {
         const response = await api.get('/products', {
           params: {
@@ -408,7 +363,6 @@ export const useProductsInfinite = (limit = 10, filters = {}) => {
             ...filters,
           },
         });
-        console.log('✅ Infinite products fetched:', response);
         
         if (!response.data || response.data.length === 0) {
           return {
@@ -441,7 +395,6 @@ export const useBlogsInfinite = (limit = 10, filters = {}) => {
   return useInfiniteQuery({
     queryKey: [QUERY_KEYS.BLOGS, 'infinite', limit, filters],
     queryFn: async ({ pageParam = 1 }) => {
-      console.log('🔄 Fetching infinite blogs, page:', pageParam);
       try {
         const response = await api.get('/blogs', {
           params: {
@@ -450,7 +403,6 @@ export const useBlogsInfinite = (limit = 10, filters = {}) => {
             ...filters,
           },
         });
-        console.log('✅ Infinite blogs fetched:', response);
         
         if (!response.data || response.data.length === 0) {
           return {

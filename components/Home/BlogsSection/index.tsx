@@ -59,6 +59,7 @@ export default function BlogsSection() {
             {blogs.map((blog, index) => (
               <CarouselItem key={index} className="basis-1/1  md:basis-1/2 lg:basis-1/3">
                 <BlogCard
+                  id={blog.id}
                   image={blog.image || "https://images.pexels.com/photos/1040173/pexels-photo-1040173.jpeg"}
                   title={blog.title}
                   description={blog.description || blog.subTitle || ""}

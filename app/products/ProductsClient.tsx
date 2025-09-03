@@ -33,24 +33,30 @@ export default function ProductsClient({ searchParams }: ProductsClientProps) {
           </div>
         )}
 
-        {error && (
+        {error && !productsData?.isSeedData && (
           <div className="flex justify-center items-center py-20">
             <div className="text-lg text-red-500">حدث خطأ في تحميل المنتجات</div>
           </div>
         )}
 
-        {!isLoading && !error && (
+        {!isLoading && isData && (
           <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {productLatest.map((product) => (
               <ProductCard
                 key={product.id}
-                id={product.id}
+                id={product.id.toString()}
                 in_stock={product.in_stock || 0}
-                description={product.description}
-                image={product.main_image || "/images/image.jpg"}
-                title={product.title}
+                description={product.description || ""}
+                image={product.main_image || "https://images.pexels.com/photos/4239091/pexels-photo-4239091.jpeg"}
+                title={product.title || "منتج ديوكس"}
               />
             ))}
+          </div>
+        )}
+
+        {!isLoading && !isData && (
+          <div className="flex justify-center items-center py-20">
+            <div className="text-lg text-dark-gray">لا توجد منتجات متاحة حالياً</div>
           </div>
         )}
       </ProductsHero>

@@ -24,24 +24,31 @@ export default function BlogsClient() {
           </div>
         )}
 
-        {error && (
+        {error && !blogsData?.isSeedData && (
           <div className="flex justify-center items-center py-20">
             <div className="text-lg text-red-500">حدث خطأ في تحميل المقالات</div>
           </div>
         )}
 
-        {!isLoading && !error && (
+        {!isLoading && isData && (
           <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {blogs.map((blog) => (
               <BlogCard
                 key={blog.id}
-                image={blog.image || "/images/articalImage.png"}
-                title={blog.title}
-                description={blog.description}
-                timeAgo={blog.time_ago}
+                id={blog.id}
+                image={blog.image || "https://images.pexels.com/photos/1040173/pexels-photo-1040173.jpeg"}
+                title={blog.title || "مقال ديوكس"}
+                description={blog.description || ""}
+                timeAgo={blog.time_ago || "منذ يوم"}
                 tags={blog.tags || []}
               />
             ))}
+          </div>
+        )}
+
+        {!isLoading && !isData && (
+          <div className="flex justify-center items-center py-20">
+            <div className="text-lg text-dark-gray">لا توجد مقالات متاحة حالياً</div>
           </div>
         )}
       </ProductsHero>
