@@ -1,0 +1,168 @@
+"use client";
+import { Section } from "@/components/shared";
+import * as yup from "yup";
+import { SubmitHandler, useForm, FormProvider } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import CustomInput from "./CustomInput";
+import { Phone, Email, User, ChatLine, Location, ArrowLeft } from "@/public/svg";
+import map from "@/public/images/_Google maps mockup.png";
+import Image from "next/image";
+const schema = yup.object().shape({
+  phone: yup.string().required().min(10),
+  email: yup.string().email().required(),
+  message: yup.string().required().min(10),
+  fullName: yup.string().required().min(3),
+});
+export type SchemaType = yup.InferType<typeof schema>;
+
+export default function Contact({ isHome }: { isHome?: boolean }) {
+  const contacts = [
+    {
+      icon: <Phone className="size-[42px]" />,
+      title: "الهاتف",
+      description: "+966 55 555 5555",
+    },
+    {
+      icon: <Email className="size-[42px]" />,
+      title: "عنوان البريدي",
+      description: "support@Dieux.com",
+    },
+    {
+      icon: <Location className="size-[42px]" />,
+      title: "الوكيشن",
+      description: " The Greek Campus - Dieux",
+    },
+  ];
+  const form = useForm<SchemaType>({
+    defaultValues: {
+      phone: "",
+      email: "",
+      message: "",
+      fullName: "",
+    },
+    resolver: yupResolver(schema),
+  });
+  const handelSubmit: SubmitHandler<SchemaType> = async (value, event) => {
+    event?.preventDefault();
+    // console.log(value);
+  };
+  return (
+    <Section
+      isWhite={isHome ? true : false}
+      hasTitle
+      subTitle="لوريم إيبسوم(Lorem Ipsum) هو ببساطة نص شكلي (بمعنى أن الغاية هي الشكل وليس المحتوى)"
+      title="تواصل معنا عبر البريد"
+    >
+      {isHome && (
+        <FormProvider {...form}>
+          <form onSubmit={form.handleSubmit(handelSubmit)} className="grid grid-cols-1 gap-[19px]">
+            <div className="grid md:grid-cols-2 gap-[15px]">
+              <CustomInput isHome name="fullName" placeholder="اسمك بالكامل" icon={<User />} />
+              <CustomInput isHome name="phone" placeholder="رقم الهاتف" icon={<Phone className="size-[35px]" />} />
+            </div>
+            <CustomInput isHome name="email" placeholder="الاميل الخاص بك" icon={<Email className="size-[30px]" />} />
+            <CustomInput
+              isHome
+              name="message"
+              area
+              placeholder="الاميل الخاص بك"
+              icon={<ChatLine className="size-[35px]" />}
+            />
+            <div className="flex gap-[20px]">
+              <button
+                type="submit"
+                className="max-w-[280px] px-[64px] py-[10px] text-white bg-second-primary-color rounded-[10px] text-[19.019px] hover:bg-second-primary-color/90 cursor-pointer transition-all duration-300"
+              >
+                تواصل معنا
+              </button>
+              <button
+                type="reset"
+                onClick={() => form.reset({ email: "", fullName: "", message: "", phone: "" })}
+                className="max-w-[184px] px-[64px] py-[10px] bg-white text-[19.019px] rounded-[10px] cursor-pointer hover:text-dark-gray transition-all duration-300"
+              >
+                الغاء
+              </button>
+            </div>
+          </form>
+        </FormProvider>
+      )}
+      {!isHome && (
+        <div className=" flex flex-col gap-[50px]">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-[30px] ">
+            <FormProvider {...form}>
+              <form onSubmit={form.handleSubmit(handelSubmit)} className="grid grid-cols-1 gap-[19px]">
+                <div className="grid md:grid-cols-2 gap-[15px]">
+                  <CustomInput name="fullName" placeholder="اسمك بالكامل" icon={<User className="size-[35px]" />} />
+                  <CustomInput name="phone" placeholder="رقم الهاتف" icon={<Phone className="size-[35px]" />} />
+                </div>
+                <CustomInput name="email" placeholder="الاميل الخاص بك" icon={<Email className="size-[30px] " />} />
+                <CustomInput
+                  name="message"
+                  area
+                  placeholder="الاميل الخاص بك"
+                  icon={<ChatLine className="size-[35px]" />}
+                />
+                <div className="flex gap-[20px]">
+                  <button
+                    type="submit"
+                    className="max-w-[280px] px-[64px] py-[10px] text-white bg-second-primary-color rounded-[10px] text-[19.019px] hover:bg-second-primary-color/90 cursor-pointer transition-all duration-300"
+                  >
+                    تواصل معنا
+                  </button>
+                  <button
+                    type="reset"
+                    onClick={() => form.reset({ email: "", fullName: "", message: "", phone: "" })}
+                    className="max-w-[184px] px-[64px] py-[10px] bg-white text-[19.019px] rounded-[10px] cursor-pointer hover:text-dark-gray transition-all duration-300"
+                  >
+                    الغاء
+                  </button>
+                </div>
+              </form>
+            </FormProvider>
+            <div className="grid gap-[20px]">
+              <div className="grid lg:grid-cols-3 gap-[17px]">
+                {contacts.map(({ icon, description, title }, index) => (
+                  <div
+                    key={index}
+                    className=" flex flex-col justify-center items-center py-[30px] bg-white rounded-[15px] gap-[15px]"
+                  >
+                    <div className="bg-gradient-to-br from-[#f2f3f8] w-fit via-white to-white p-[24px] rounded-[15px] border border-border flex justify-center items-center">
+                      {icon}
+                    </div>
+                    <h5 className="text-[20px] leading-[32px] text-second-primary-color text-center"> {title} </h5>
+                    <p className="text-base text-dark-gray leading-[24px]">{description} </p>
+                  </div>
+                ))}
+              </div>
+              <Image src={map} alt="map" width={1280} height={960} className="rounded-[15px]" />
+            </div>
+          </div>
+          <div>
+            <div className="flex flex-col items-center text-center gap-[20px] ">
+              <h2 className="text48 text-center leading-[130%] tracking-[-1.44px]">فروعنا</h2>
+              <h3 className="text20 text-center leading-[147%] tracking-[-0.6px] text-dark-gray max-w-[33%]">
+                لوريم إيبسوم(Lorem Ipsum) هو ببساطة نص شكلي (بمعنى أن الغاية هي الشكل وليس المحتوى)
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-x-[17px] gap-y-[20px] mt-[50px]">
+              {Array.from({ length: 6 }).map((_, index) => {
+                return (
+                  <div key={index} className="bg-white flex items-center gap-[15px] p-[30px] rounded-[15px] border border-border-primary hover:scale-95 transition-all cursor-pointer duration-300">
+                      <div className="flex items-center justify-center p-6 size-[96px] rounded-[15px] border border-border-primary">
+                        <Location className="size-[42px]" />
+                      </div>
+                      <div className="flex-1 flex flex-col gap-[15px]">
+                        <h3 className="text20 leading-8 text-text-dark ">الوكيشن التاني علي الخريطه</h3>
+                        <p className="text16 leading-6 text-description">فرع مدينة نصر: الحي العاشر، مدينة نصر، القاهرة، مصر.</p>
+                      </div>
+                      <ArrowLeft/>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+    </Section>
+  );
+}
