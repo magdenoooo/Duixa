@@ -230,3 +230,5 @@ export const useBlogsInfinite = (limit = 10, filters = {}) => {
     gcTime: 10 * 60 * 1000,
   });
 };
+
+export { useFeaturedProducts }
